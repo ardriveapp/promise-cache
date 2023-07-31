@@ -1,0 +1,25 @@
+{
+  "name": "promise-cache",
+  "version": "1.0.0",
+  "description": "The promise cache utility",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "nyc mocha"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chai": "^4.3.5",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^20.4.5",
+    "mocha": "^10.0.0",
+    "nyc": "^15.1.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "@alexsasharegan/simple-cache": "^3.3.3",
+    "chai": "^4.3.7"
+  }
+}
