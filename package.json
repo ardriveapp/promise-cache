@@ -1,7 +1,7 @@
 {
-  "name": "promise-cache",
+  "name": "@ardrive/ardrive-promise-cache",
   "version": "1.0.0",
-  "description": "The promise cache utility",
+  "description": "The promise cache utility used internally at ar.io",
   "main": "index.js",
   "scripts": {
     "build": "tsc",
@@ -17,6 +17,9 @@
     "nyc": "^15.1.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.1.6"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "dependencies": {
     "@alexsasharegan/simple-cache": "^3.3.3",
