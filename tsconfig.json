@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es6",
     "module": "ES6",
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "Node",
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
@@ -10,5 +10,9 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": ["src"],
-  "exclude": ["node_modules, **/*.test.ts"]
+  "exclude": ["node_modules, src/**/*.test.ts"],
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  }
 }

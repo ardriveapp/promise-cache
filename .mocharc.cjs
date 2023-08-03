@@ -6,9 +6,10 @@ process.env.NODE_ENV = "test";
 // Reference for options: https://github.com/mochajs/mocha/blob/master/example/config/.mocharc.js
 module.exports = {
   extension: ["ts"],
-  spec: [ "src/**/*.test.ts"],
+  spec: ["src/**/*.test.ts"],
   require: ["ts-node/register/transpile-only"],
   timeout: "10000", // 10 seconds
   parallel: true,
   recursive: true,
+  "node-option": ["loader=ts-node/esm"],
 };
