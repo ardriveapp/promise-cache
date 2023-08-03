@@ -3,13 +3,14 @@
   "version": "1.0.1",
   "description": "The promise cache utility used internally at ar.io",
   "main": "index.js",
+  "repository": "https://github.com/ar-io/promise-cache.git",
   "scripts": {
     "build": "tsc",
     "test": "nyc mocha",
     "prepare": "husky install"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "javed@ar.io",
+  "license": "AGPL-3.0-or-later",
   "devDependencies": {
     "@semantic-release/git": "^10.0.1",
     "@types/chai": "^4.3.5",
