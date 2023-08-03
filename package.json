@@ -1,6 +1,6 @@
 {
   "name": "@ardrive/ardrive-promise-cache",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The promise cache utility used internally at ar.io",
   "main": "index.js",
   "scripts": {
