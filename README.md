@@ -1,6 +1,6 @@
-# PromiseCache
+## PromiseCache
 
-`PromiseCache` is a simple, yet powerful caching library designed to cache promises, enabling faster subsequent retrievals of data. It's built on top of `@alexsasharegan/simple-cache`, which provides the underlying caching mechanism.
+PromiseCache is a caching library designed to cache promises, enabling faster subsequent retrievals of data. If you put multiple promises with the same key, it will cache the first one and return that value for subsequent retrievals.
 
 ## Installation
 
@@ -29,11 +29,15 @@ const params: CacheParams = {
 const cache = new PromiseCache<string, number>(params);
 
 // Storing a promise
-const promise = new Promise<number>((resolve) => resolve(42));
-cache.put("answer", promise);
+const promise1 = new Promise<number>((resolve) => resolve(42));
+const promise2 = new Promise<number>((resolve) => resolve(100));
+
+cache.put("answer", promise1);
+cache.put("answer", promise2); 
 
 // Retrieving a promise
-const retrievedPromise = cache.get("answer");
+const retrievedPromise = cache.get("answer"); // This will resolve with 42 and not 100 since the first promise was cached.
+// eg usecase: caching network requests by parameters 
 
 // Removing a promise
 cache.remove("answer");
