@@ -17,6 +17,8 @@ jobs:
           node-version: 16
       - run: npm ci
       - run: npm test
+      - run: npx semantic-release
+
 
   publish-npm:
     needs: build
