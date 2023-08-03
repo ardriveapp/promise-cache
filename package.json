@@ -5,6 +5,9 @@
   "main": "index.js",
   "repository": "github.com/ar-io/promise-cache.git",
   "type": "module",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "nyc mocha",
