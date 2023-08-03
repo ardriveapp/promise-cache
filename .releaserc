@@ -5,13 +5,6 @@
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
-    [
-      {
-        "tool": "npm",
-        "domain": "ario",
-        "repository": "ar.io"
-      }
-    ],
     "@semantic-release/npm",
     "@semantic-release/github",
     [
