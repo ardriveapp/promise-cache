@@ -7,11 +7,11 @@ PromiseCache is a caching library designed to cache promises, enabling faster su
 You can install the library using npm or yarn:
 
 ```bash
-npm install @alexsasharegan/simple-cache
+npm i @ardrive/ardrive-promise-cache
 ```
 
 ```bash
-yarn add @alexsasharegan/simple-cache
+yarn add @ardrive/ardrive-promise-cache
 ```
 
 ## Usage
@@ -19,7 +19,7 @@ yarn add @alexsasharegan/simple-cache
 Here's a simple example of how you can use `PromiseCache`:
 
 ```typescript
-import { PromiseCache, CacheParams } from './path/to/promise-cache';
+import { PromiseCache, CacheParams } from '@ardrive/ardrive-promise-cache';
 
 const params: CacheParams = {
   cacheCapacity: 100,
