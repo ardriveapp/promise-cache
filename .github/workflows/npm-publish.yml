@@ -10,9 +10,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-          NPM_TOKEN: ${{secrets.npm_token}}
-          GITHUB_TOKEN: ${{secrets.github_token}}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -23,7 +20,7 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ env.npm_token }}
+          NPM_TOKEN: ${{ secrets.npm_token }}
         run: npx semantic-release
 
         
