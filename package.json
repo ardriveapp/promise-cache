@@ -32,7 +32,6 @@
     "@alexsasharegan/simple-cache": "^3.3.3",
     "@semantic-release/git": "^10.0.1",
     "eslint-plugin-header": "^3.1.1",
-    "semantic-release": "^21.0.7",
-    "semantic-release-codeartifact": "^2.0.17"
+    "semantic-release": "^21.0.7"
   }
 }
