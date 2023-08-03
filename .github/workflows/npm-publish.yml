@@ -20,6 +20,10 @@ jobs:
           node-version: 18
       - run: npm ci
       - run: npm test
-      - run: npx semantic-release
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ env.npm_token }}
+        run: npx semantic-release
 
         
