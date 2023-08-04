@@ -14,27 +14,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import chai, { expect } from "chai";
-import { describe, it } from "mocha";
+import chai, { expect } from 'chai';
+import { describe, it } from 'mocha';
 import chaiAsPromised from 'chai-as-promised';
 import sinon from 'sinon';
 
-import { ReadThroughPromiseCache } from "./readThroughPromiseCache";
+import { ReadThroughPromiseCache } from './readThroughPromiseCache';
 
 // allows us to use chai's expect syntax with async/await
-chai.use(chaiAsPromised)
+chai.use(chaiAsPromised);
 
-describe("ReadThroughPromiseCache Class", () => {
+describe('ReadThroughPromiseCache Class', () => {
   let clock: sinon.SinonFakeTimers;
   before(() => {
     clock = sinon.useFakeTimers();
-  })
+  });
 
   after(() => {
     clock.restore();
   });
 
-  it("should be able to cache and retrieve new entries", async () => {
+  it('should be able to cache and retrieve new entries', async () => {
     // Test function to make sure we return a different value after the first call
     // Since function is passed in the constructor
 
@@ -43,9 +43,9 @@ describe("ReadThroughPromiseCache Class", () => {
     const testFunction = async () => {
       if (testTracker < 1) {
         testTracker++;
-        return "one";
+        return 'one';
       } else {
-        return "two";
+        return 'two';
       }
     };
     const cache = new ReadThroughPromiseCache<string, string>({
@@ -53,36 +53,36 @@ describe("ReadThroughPromiseCache Class", () => {
       readThroughFunction: testFunction,
     });
 
-    expect(await cache.get("1")).to.equal("one");
-    expect(await cache.get("1")).to.equal("one"); // the original cached value has not expired
+    expect(await cache.get('1')).to.equal('one');
+    expect(await cache.get('1')).to.equal('one'); // the original cached value has not expired
   });
 
-  it("should throw error if readThroughFunction throws", async () => {
+  it('should throw error if readThroughFunction throws', async () => {
     let testTracker = 0;
     const testFunction = async () => {
       if (testTracker < 1) {
         testTracker++;
-        throw new Error("test error");
+        throw new Error('test error');
       } else {
-        return "two";
+        return 'two';
       }
     };
     const cache = new ReadThroughPromiseCache<string, string>({
       cacheParams: { cacheCapacity: 10, cacheTTL: 10_000 },
       readThroughFunction: testFunction,
     });
-    await expect(cache.get("1")).to.be.rejectedWith('test error') // throws error on first call and does not get cached
-    expect(await cache.get("1")).to.equal("two"); // resolves on second call
+    await expect(cache.get('1')).to.be.rejectedWith('test error'); // throws error on first call and does not get cached
+    expect(await cache.get('1')).to.equal('two'); // resolves on second call
   });
 
-  it("should resolve new promise for key after ttl expires", async () => {
+  it('should resolve new promise for key after ttl expires', async () => {
     let testTracker = 0;
     const testFunction = async () => {
       if (testTracker < 1) {
         testTracker++;
-        return "one";
+        return 'one';
       } else {
-        return "two";
+        return 'two';
       }
     };
 
@@ -91,12 +91,12 @@ describe("ReadThroughPromiseCache Class", () => {
       readThroughFunction: testFunction,
     });
 
-    expect(await cache.get("1")).to.equal("one");
-    clock.tick(10_001);  // tick our fake timer to expire the cache
-    expect(await cache.get("1")).to.equal("two");
+    expect(await cache.get('1')).to.equal('one');
+    clock.tick(10_001); // tick our fake timer to expire the cache
+    expect(await cache.get('1')).to.equal('two');
   });
 
-  it("preserves most requested entries when over capacity", async () => {
+  it('preserves most requested entries when over capacity', async () => {
     // Test function to make sure we return a different value after the first call
     // Since function is passed in the constructor
     let testTracker = 0;
@@ -104,9 +104,9 @@ describe("ReadThroughPromiseCache Class", () => {
     const testFunction = async () => {
       if (testTracker < 1) {
         testTracker++;
-        return "one";
+        return 'one';
       } else {
-        return "two";
+        return 'two';
       }
     };
 
@@ -115,8 +115,8 @@ describe("ReadThroughPromiseCache Class", () => {
       readThroughFunction: testFunction,
     });
 
-    expect(await cache.get("1")).to.equal("one");
-    expect(await cache.get("2")).to.equal("two"); // over capacity
-    expect(await cache.get("1")).to.equal("two"); // 1 is persisted in cache
+    expect(await cache.get('1')).to.equal('one');
+    expect(await cache.get('2')).to.equal('two'); // over capacity
+    expect(await cache.get('1')).to.equal('two'); // 1 is persisted in cache
   });
 });
