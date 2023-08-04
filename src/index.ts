@@ -16,3 +16,4 @@
  */
 
 export * from './promiseCache';
+export * from './readThroughPromiseCache';

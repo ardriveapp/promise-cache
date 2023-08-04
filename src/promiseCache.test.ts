@@ -19,7 +19,7 @@ import { expect } from 'chai';
 
 import { PromiseCache } from './promiseCache';
 
-describe('PromiseCache class', ()  =>  {
+describe('PromiseCache class', () => {
   it('constructor takes a capacity that is not exceeded by excessive puts', async () => {
     const cache = new PromiseCache<string, string>({
       cacheCapacity: 1,
@@ -33,7 +33,7 @@ describe('PromiseCache class', ()  =>  {
     expect(cache.size()).to.equal(1);
   });
 
-  it('preserves most requested entries when over capacity', async () => {
+  it('preserves most-requested entries when over capacity', async () => {
     const cache = new PromiseCache<string, string>({
       cacheCapacity: 3,
       cacheTTL: 60,
@@ -124,7 +124,7 @@ describe('PromiseCache class', ()  =>  {
     });
   });
 
-  describe('size function', ()  =>  {
+  describe('size function', () => {
     it('returns the correct entry count', () => {
       const cache = new PromiseCache<string, string>({
         cacheCapacity: 2,
@@ -136,7 +136,7 @@ describe('PromiseCache class', ()  =>  {
     });
   });
 
-  describe('cacheKeyString function', ()  =>  {
+  describe('cacheKeyString function', () => {
     it('returns and input string as the same string', () => {
       const cache = new PromiseCache<string, string>({
         cacheCapacity: 1,
@@ -163,7 +163,7 @@ describe('PromiseCache class', ()  =>  {
     });
   });
 
-  describe('time to live', ()  =>  {
+  describe('time to live', () => {
     it('purges all entries after ttl', async () => {
       const cache = new PromiseCache<string, string>({
         cacheCapacity: 1,

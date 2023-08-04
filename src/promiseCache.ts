@@ -17,7 +17,6 @@
 
 import { Cache, EphemeralCache } from '@alexsasharegan/simple-cache';
 
-
 export interface CacheParams {
   cacheCapacity: number;
   cacheTTL: number;
