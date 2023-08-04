@@ -4,7 +4,6 @@
   "description": "The promise cache utility used internally at ar.io",
   "main": "dist/index.js",
   "repository": "github.com/ar-io/promise-cache.git",
-  "type": "module",
   "files": [
     "dist"
   ],
