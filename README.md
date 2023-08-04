@@ -92,7 +92,7 @@ Returns the current number of items in the cache.
 
 ### ReadThroughPromiseCache
 
-A Read Through Cache is useful for storing data in the cache, and fetching it from an async data source when not available and commonly used in high throughput systems. Some examples and use cases for Read Through Caching (and other caching patterns) can be found [here](https://www.prisma.io/dataguide/managing-databases/introduction-database-caching#read-through).
+A Read Through Cache is useful for high throughput systems. If the cache contains the requested data, it is immediately returned. If the data does not exist (or has expired), the cache will fetch and place resulting promise in the cache for future calls. Some examples and use cases for Read Through Caching (and other caching patterns) can be found [here](https://www.prisma.io/dataguide/managing-databases/introduction-database-caching#read-through).
 
 #### Example
 
