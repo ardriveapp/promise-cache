@@ -1,3 +1,10 @@
+## [1.0.13](https://github.com/ar-io/promise-cache/compare/v1.0.12...v1.0.13) (2023-08-04)
+
+
+### Bug Fixes
+
+* publish commonjs module ([05e5c49](https://github.com/ar-io/promise-cache/commit/05e5c49751edcde033f193a63d35716e5b8efb85))
+
 ## [1.0.12](https://github.com/ar-io/promise-cache/compare/v1.0.11...v1.0.12) (2023-08-04)
 
 
