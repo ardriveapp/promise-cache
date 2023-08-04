@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/ar-io/promise-cache/compare/v1.0.13...v1.1.0) (2023-08-04)
+
+
+### Features
+
+* **ReadThroughPromiseCache:** add ReadThroughPromiseCache and update tests and README ([fac1fa2](https://github.com/ar-io/promise-cache/commit/fac1fa2a5d11fe589394293467cf5c9aadafd457))
+
 ## [1.0.13](https://github.com/ar-io/promise-cache/compare/v1.0.12...v1.0.13) (2023-08-04)
 
 
