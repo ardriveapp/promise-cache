@@ -1,3 +1,10 @@
+## [1.0.12](https://github.com/ar-io/promise-cache/compare/v1.0.11...v1.0.12) (2023-08-04)
+
+
+### Bug Fixes
+
+* include declaration files on output ([8937ef4](https://github.com/ar-io/promise-cache/commit/8937ef4822b3b04192143013a4761643e4299df9))
+
 ## [1.0.11](https://github.com/ar-io/promise-cache/compare/v1.0.10...v1.0.11) (2023-08-03)
 
 
