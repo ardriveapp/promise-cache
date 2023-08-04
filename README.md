@@ -32,15 +32,15 @@ const cache = new PromiseCache<string, number>(params);
 const promise1 = new Promise<number>((resolve) => resolve(42));
 const promise2 = new Promise<number>((resolve) => resolve(100));
 
-cache.put("answer", promise1);
-cache.put("answer", promise2); 
+cache.put('answer', promise1);
+cache.put('answer', promise2);
 
 // Retrieving a promise
-const retrievedPromise = cache.get("answer"); // This will resolve with 42 and not 100 since the first promise was cached.
-// eg usecase: caching network requests by parameters 
+const retrievedPromise = cache.get('answer'); // This will resolve with 42 and not 100 since the first promise was cached.
+// eg usecase: caching network requests by parameters
 
 // Removing a promise
-cache.remove("answer");
+cache.remove('answer');
 
 // Clearing the cache
 cache.clear();
