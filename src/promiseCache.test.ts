@@ -33,7 +33,7 @@ describe('PromiseCache class', () => {
     expect(cache.size()).to.equal(1);
   });
 
-  it('preserves most requested entries when over capacity', async () => {
+  it('preserves most-requested entries when over capacity', async () => {
     const cache = new PromiseCache<string, string>({
       cacheCapacity: 3,
       cacheTTL: 60,
