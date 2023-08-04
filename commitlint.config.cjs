@@ -16,6 +16,6 @@
  */
 
 module.exports = {
-    extends: ['@commitlint/config-conventional'],
-    ignores: [(message) => message.includes('[skip ci]')],
-  };
+  extends: ['@commitlint/config-conventional'],
+  ignores: [(message) => message.includes('[skip ci]')],
+};

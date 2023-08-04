@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Cache, EphemeralCache } from "@alexsasharegan/simple-cache";
+import { Cache, EphemeralCache } from '@alexsasharegan/simple-cache';
 
 
 export interface CacheParams {
@@ -23,7 +23,7 @@ export interface CacheParams {
   cacheTTL: number;
 }
 export class PromiseCache<K, V> {
-  private cache: Cache<string, Promise<V>>;
+  private readonly cache: Cache<string, Promise<V>>;
 
   constructor({ cacheCapacity, cacheTTL }: CacheParams) {
     this.cache = EphemeralCache<string, Promise<V>>(cacheCapacity, cacheTTL);
@@ -32,12 +32,12 @@ export class PromiseCache<K, V> {
   cacheKeyString(key: K): string {
     // Note: This implementation may not sufficiently differentiate keys
     // for certain object types depending on their toJSON implementation
-    return typeof key === "string" ? key : JSON.stringify(key);
+    return typeof key === 'string' ? key : JSON.stringify(key);
   }
 
-  put(key: K, value: Promise<V>): Promise<V> {
+  async put(key: K, value: Promise<V>): Promise<V> {
     this.cache.write(this.cacheKeyString(key), value);
-    return value;
+    return await value;
   }
 
   get(key: K): Promise<V> | undefined {
