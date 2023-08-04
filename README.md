@@ -28,7 +28,7 @@ import { PromiseCache, CacheParams } from '@ardrive/ardrive-promise-cache';
 
 const params: CacheParams = {
   cacheCapacity: 100,
-  cacheTTL: 10_000, // cache for 1 minute
+  cacheTTL: 60_000, // cache for 1 minute
 };
 
 const cache = new PromiseCache<string, number>(params);
@@ -99,7 +99,7 @@ import { ReadThroughPromiseCache, CacheParams } from '@ardrive/ardrive-promise-c
 
 const params: CacheParams = {
   cacheCapacity: 100,
-  cacheTTL: 10_000, // cache for 1 minute
+  cacheTTL: 60_000, // cache for 1 minute
 };
 
 const readThroughCacheParams: ReadThroughPromiseCacheParams<string,AxiosResponse> = {

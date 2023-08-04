@@ -40,7 +40,7 @@ describe('ReadThroughPromiseCache Class', () => {
 
     let testTracker = 0;
 
-    const testFunction = async () => {
+    const testFunction = async (): Promise<string> => {
       if (testTracker < 1) {
         testTracker++;
         return 'one';
@@ -49,7 +49,7 @@ describe('ReadThroughPromiseCache Class', () => {
       }
     };
     const cache = new ReadThroughPromiseCache<string, string>({
-      cacheParams: { cacheCapacity: 10, cacheTTL: 10_000 },
+      cacheParams: { cacheCapacity: 10, cacheTTL: 60_000 },
       readThroughFunction: testFunction,
     });
 
@@ -59,7 +59,7 @@ describe('ReadThroughPromiseCache Class', () => {
 
   it('should throw error if readThroughFunction throws', async () => {
     let testTracker = 0;
-    const testFunction = async () => {
+    const testFunction = async (): Promise<string>=> {
       if (testTracker < 1) {
         testTracker++;
         throw new Error('test error');
@@ -68,7 +68,7 @@ describe('ReadThroughPromiseCache Class', () => {
       }
     };
     const cache = new ReadThroughPromiseCache<string, string>({
-      cacheParams: { cacheCapacity: 10, cacheTTL: 10_000 },
+      cacheParams: { cacheCapacity: 10, cacheTTL: 60_000 },
       readThroughFunction: testFunction,
     });
     await expect(cache.get('1')).to.be.rejectedWith('test error'); // throws error on first call and does not get cached
@@ -77,7 +77,7 @@ describe('ReadThroughPromiseCache Class', () => {
 
   it('should resolve new promise for key after ttl expires', async () => {
     let testTracker = 0;
-    const testFunction = async () => {
+    const testFunction = async (): Promise<string> => {
       if (testTracker < 1) {
         testTracker++;
         return 'one';
@@ -87,12 +87,12 @@ describe('ReadThroughPromiseCache Class', () => {
     };
 
     const cache = new ReadThroughPromiseCache<string, string>({
-      cacheParams: { cacheCapacity: 10, cacheTTL: 10_000 },
+      cacheParams: { cacheCapacity: 10, cacheTTL: 60_000 },
       readThroughFunction: testFunction,
     });
 
     expect(await cache.get('1')).to.equal('one');
-    clock.tick(10_001); // tick our fake timer to expire the cache
+    clock.tick(60_001); // tick our fake timer to expire the cache
     expect(await cache.get('1')).to.equal('two');
   });
 
@@ -101,7 +101,7 @@ describe('ReadThroughPromiseCache Class', () => {
     // Since function is passed in the constructor
     let testTracker = 0;
 
-    const testFunction = async () => {
+    const testFunction = async (): Promise<string> => {
       if (testTracker < 1) {
         testTracker++;
         return 'one';

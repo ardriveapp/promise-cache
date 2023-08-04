@@ -41,7 +41,7 @@ export class ReadThroughPromiseCache<K, V> {
     this.readThroughFunction = readThroughFunction;
   }
 
-  get(key: K): Promise<V> {
+  async get(key: K): Promise<V> {
     const cachedValue = this.cache.get(key);
     if (cachedValue) {
       return cachedValue;

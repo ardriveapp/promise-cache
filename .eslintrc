@@ -18,6 +18,15 @@
     "@typescript-eslint/consistent-type-imports": "off",
     "@typescript-eslint/no-floating-promises": "off",
     "@typescript-eslint/no-unused-expressions": "off",
-    "mocha/no-mocha-arrows": "off"
+    "@typescript-eslint/return-await": "off",
+    "mocha/no-mocha-arrows": "off",
+    "@typescript-eslint/strict-boolean-expressions": [
+      2,
+      {
+        "allowNullableObject": true,
+        "allowNullableBoolean": true,
+        "allowAny": true
+      }
+    ],
   }
 }

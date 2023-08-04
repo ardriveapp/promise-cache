@@ -24,7 +24,7 @@ export interface CacheParams {
 export class PromiseCache<K, V> {
   private readonly cache: Cache<string, Promise<V>>;
 
-  constructor({ cacheCapacity = 100, cacheTTL = 10_000 }: CacheParams) {
+  constructor({ cacheCapacity = 100, cacheTTL = 60_000 }: CacheParams) {
     this.cache = EphemeralCache<string, Promise<V>>(cacheCapacity, cacheTTL);
   }
 
