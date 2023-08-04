@@ -14,14 +14,14 @@
     "project": "tsconfig.json"
   },
   "rules": {
-    "header/header": [2, "./resources/license.header.js"],
+    "header/header": ["error", "./resources/license.header.js"],
     "@typescript-eslint/consistent-type-imports": "off",
     "@typescript-eslint/no-floating-promises": "off",
     "@typescript-eslint/no-unused-expressions": "off",
     "@typescript-eslint/return-await": "off",
     "mocha/no-mocha-arrows": "off",
     "@typescript-eslint/strict-boolean-expressions": [
-      2,
+      "error",
       {
         "allowNullableObject": true,
         "allowNullableBoolean": true,

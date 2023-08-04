@@ -17,15 +17,6 @@
 import { CacheParams, PromiseCache } from './promiseCache';
 
 interface ReadThroughPromiseCacheParams<K, V> {
-  /**
-   * @example
-    readThroughFunction = () => {
-        // try elastic cache
-        if hit, return it
-        else try apiCall
-        return someApiService.fetchData();
-     }
-  */
   readThroughFunction: (key: K) => Promise<V>;
   cacheParams: CacheParams;
 }
