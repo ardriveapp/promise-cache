@@ -17,7 +17,6 @@
 
 import { Cache, EphemeralCache } from '@alexsasharegan/simple-cache';
 
-
 export interface CacheParams {
   cacheCapacity: number;
   cacheTTL: number;
@@ -25,7 +24,7 @@ export interface CacheParams {
 export class PromiseCache<K, V> {
   private readonly cache: Cache<string, Promise<V>>;
 
-  constructor({ cacheCapacity, cacheTTL }: CacheParams) {
+  constructor({ cacheCapacity = 100, cacheTTL = 10_000 }: CacheParams) {
     this.cache = EphemeralCache<string, Promise<V>>(cacheCapacity, cacheTTL);
   }
 
