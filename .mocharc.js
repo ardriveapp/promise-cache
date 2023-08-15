@@ -11,5 +11,4 @@ module.exports = {
   timeout: '10000', // 10 seconds
   parallel: true,
   recursive: true,
-  'node-option': ['loader=ts-node/esm'],
 };
