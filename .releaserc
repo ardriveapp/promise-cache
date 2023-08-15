@@ -1,13 +1,19 @@
 {
   "branches": "main",
-  "repositoryUrl": "https://github.com/ar-io/promise-cache",
+  "repositoryUrl": "https://github.com/ardriveapp/promise-cache",
   "debug": "false",
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
     "@semantic-release/changelog",
-    "@semantic-release/github",
     "@semantic-release/npm",
+    [
+      "@semantic-release/github",{
+        "assets": [
+          "dist/**"
+        ]
+      }
+    ],
     [
       "@semantic-release/git",
       {

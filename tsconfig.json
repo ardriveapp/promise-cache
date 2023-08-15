@@ -11,8 +11,5 @@
     "declaration": true
   },
   "exclude": ["node_modules", "dist"],
-  "include": ["src"],
-  "ts-node": {
-    "experimentalSpecifierResolution": "node"
-  }
+  "include": ["src"]
 }
