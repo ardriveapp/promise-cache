@@ -17,7 +17,7 @@
 import chai, { expect } from 'chai';
 import { describe, it } from 'mocha';
 import chaiAsPromised from 'chai-as-promised';
-import sinon from 'sinon';
+import { useFakeTimers } from 'sinon';
 
 import { ReadThroughPromiseCache } from './readThroughPromiseCache';
 
@@ -27,7 +27,7 @@ chai.use(chaiAsPromised);
 describe('ReadThroughPromiseCache Class', () => {
   let clock: sinon.SinonFakeTimers;
   before(() => {
-    clock = sinon.useFakeTimers();
+    clock = useFakeTimers();
   });
 
   after(() => {
@@ -59,7 +59,7 @@ describe('ReadThroughPromiseCache Class', () => {
 
   it('should throw error if readThroughFunction throws', async () => {
     let testTracker = 0;
-    const testFunction = async (): Promise<string>=> {
+    const testFunction = async (): Promise<string> => {
       if (testTracker < 1) {
         testTracker++;
         throw new Error('test error');
