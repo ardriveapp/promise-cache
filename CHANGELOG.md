@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/ardriveapp/promise-cache/compare/v1.1.1...v1.1.2) (2023-08-17)
+
+
+### Bug Fixes
+
+* include types, upgrade to yarn ([03949a6](https://github.com/ardriveapp/promise-cache/commit/03949a60b8a53213c6ca40181978d25b13a016ab))
+
 ## [1.1.1](https://github.com/ardriveapp/promise-cache/compare/v1.1.0...v1.1.1) (2023-08-17)
 
 
