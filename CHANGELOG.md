@@ -1,3 +1,11 @@
+## [1.1.3](https://github.com/ardriveapp/promise-cache/compare/v1.1.2...v1.1.3) (2023-08-17)
+
+
+### Bug Fixes
+
+* build before publishing ([682f60f](https://github.com/ardriveapp/promise-cache/commit/682f60f8cd097aadae7dc7b19ab01e707ea418ed))
+* temp ([a7e9021](https://github.com/ardriveapp/promise-cache/commit/a7e9021d1421149b5f744dd6bb9643e2e68e064c))
+
 ## [1.1.2](https://github.com/ardriveapp/promise-cache/compare/v1.1.1...v1.1.2) (2023-08-17)
 
 
