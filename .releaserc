@@ -1,6 +1,10 @@
 {
   "branches": [
-    "main"
+    "main",
+    {
+      "name": "alpha",
+      "prerelease": true
+    }
   ],
   "repositoryUrl": "https://github.com/ardriveapp/promise-cache",
   "debug": "false",
