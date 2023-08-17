@@ -1,5 +1,7 @@
 {
-  "branches": "main",
+  "branches": [
+    "main"
+  ],
   "repositoryUrl": "https://github.com/ardriveapp/promise-cache",
   "debug": "false",
   "plugins": [
@@ -19,7 +21,7 @@
       {
         "assets": [
           "package.json",
-          "package-lock.json",
+          "yarn.lock",
           "CHANGELOG.md"
         ],
         "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
