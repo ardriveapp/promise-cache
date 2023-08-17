@@ -1,21 +1,29 @@
 {
   "name": "@ardrive/ardrive-promise-cache",
-  "version": "1.1.0",
-  "description": "The promise cache utility used internally at ar.io",
+  "version": "1.1.1",
+  "description": "A promise cache utility.",
   "main": "dist/index.js",
-  "repository": "github.com/ar-io/promise-cache.git",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ardriveapp/promise-cache.git"
+  },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "npx tsc --project ./tsconfig.prod.json",
+    "build": "tsc --project ./tsconfig.prod.json",
     "test": "nyc mocha",
     "prepare": "husky install",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "format": "prettier --write ."
   },
-  "author": "javed@ar.io",
+  "author": {
+    "name": "Permanent Data Solutions Inc",
+    "email": "info@ardrive.io",
+    "website": "https://ardrive.io"
+  },
   "license": "AGPL-3.0-or-later",
   "devDependencies": {
     "@commitlint/cli": "^17.1.2",
@@ -27,12 +35,12 @@
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.4.5",
     "@types/sinon": "^10.0.16",
-    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/eslint-plugin": "^6.4.0",
+    "@typescript-eslint/parser": "^6.4.0",
     "chai": "^4.3.7",
     "chai-as-promised": "^7.1.1",
     "eslint": "^8.46.0",
     "eslint-config-prettier": "^8.10.0",
-    "eslint-config-standard-with-typescript": "^37.0.0",
     "eslint-plugin-header": "^3.1.1",
     "eslint-plugin-import": "^2.28.0",
     "eslint-plugin-mocha": "^10.1.0",
@@ -52,7 +60,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@alexsasharegan/simple-cache": "^3.3.3",
-    "@typescript-eslint/eslint-plugin": "^5.62.0"
+    "@alexsasharegan/simple-cache": "^3.3.3"
   }
 }

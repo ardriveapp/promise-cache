@@ -44,7 +44,7 @@ export class ReadThroughPromiseCache<K, V> {
       this.cache.remove(key);
     });
 
-    void this.cache.put(key, valuePromise);
+    this.cache.put(key, valuePromise);
 
     return valuePromise;
   }
