@@ -34,9 +34,9 @@ export class PromiseCache<K, V> {
     return typeof key === 'string' ? key : JSON.stringify(key);
   }
 
-  async put(key: K, value: Promise<V>): Promise<V> {
+  put(key: K, value: Promise<V>): Promise<V> {
     this.cache.write(this.cacheKeyString(key), value);
-    return await value;
+    return value;
   }
 
   get(key: K): Promise<V> | undefined {

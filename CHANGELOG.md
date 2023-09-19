@@ -1,3 +1,10 @@
+## [1.1.4-alpha.1](https://github.com/ardriveapp/promise-cache/compare/v1.1.3...v1.1.4-alpha.1) (2023-09-19)
+
+
+### Bug Fixes
+
+* remove await when putting value into promiseCache ([20ccb41](https://github.com/ardriveapp/promise-cache/commit/20ccb413f36927380c458e9d3b972351b3090b6b))
+
 ## [1.1.3](https://github.com/ardriveapp/promise-cache/compare/v1.1.2...v1.1.3) (2023-08-17)
 
 
