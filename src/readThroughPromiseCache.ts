@@ -48,4 +48,21 @@ export class ReadThroughPromiseCache<K, V> {
 
     return valuePromise;
   }
+
+  put(key: K, value: Promise<V>): Promise<V> {
+    this.cache.put(key, value);
+    return value;
+  }
+
+  remove(key: K): void {
+    this.cache.remove(key);
+  }
+
+  clear(): void {
+    this.cache.clear();
+  }
+
+  size(): number {
+    return this.cache.size();
+  }
 }
