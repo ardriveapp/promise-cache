@@ -16,29 +16,32 @@
  */
 import { CacheParams, PromiseCache } from './promiseCache';
 
-interface ReadThroughPromiseCacheParams<K, V> {
-  readThroughFunction: (key: K) => Promise<V>;
+interface ReadThroughPromiseCacheParams<K, V, D = void> {
+  readThroughFunction: (key: K, readThroughData?: D) => Promise<V>;
   cacheParams: CacheParams;
 }
 
-export class ReadThroughPromiseCache<K, V> {
+export class ReadThroughPromiseCache<K, V, D = void> {
   private readonly cache: PromiseCache<K, V>;
-  private readonly readThroughFunction: (key: K) => Promise<V>;
+  private readonly readThroughFunction: (
+    key: K,
+    readThroughData?: D,
+  ) => Promise<V>;
   constructor({
     cacheParams,
     readThroughFunction,
-  }: ReadThroughPromiseCacheParams<K, V>) {
+  }: ReadThroughPromiseCacheParams<K, V, D>) {
     this.cache = new PromiseCache(cacheParams);
     this.readThroughFunction = readThroughFunction;
   }
 
-  async get(key: K): Promise<V> {
+  async get(key: K, readThroughData?: D): Promise<V> {
     const cachedValue = this.cache.get(key);
     if (cachedValue) {
       return cachedValue;
     }
 
-    const valuePromise = this.readThroughFunction(key);
+    const valuePromise = this.readThroughFunction(key, readThroughData);
 
     valuePromise.catch(() => {
       this.cache.remove(key);
@@ -47,5 +50,22 @@ export class ReadThroughPromiseCache<K, V> {
     this.cache.put(key, valuePromise);
 
     return valuePromise;
+  }
+
+  put(key: K, value: Promise<V>): Promise<V> {
+    this.cache.put(key, value);
+    return value;
+  }
+
+  remove(key: K): void {
+    this.cache.remove(key);
+  }
+
+  clear(): void {
+    this.cache.clear();
+  }
+
+  size(): number {
+    return this.cache.size();
   }
 }

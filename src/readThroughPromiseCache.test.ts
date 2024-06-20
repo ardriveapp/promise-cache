@@ -119,4 +119,85 @@ describe('ReadThroughPromiseCache Class', () => {
     expect(await cache.get('2')).to.equal('two'); // over capacity
     expect(await cache.get('1')).to.equal('two'); // 1 is persisted in cache
   });
+
+  it('should be able to manually put new entries in the cache', async () => {
+    const cache = new ReadThroughPromiseCache<string, string>({
+      cacheParams: { cacheCapacity: 10, cacheTTL: 60_000 },
+      readThroughFunction: async () => 'one',
+    });
+
+    expect(await cache.get('1')).to.equal('one');
+    cache.put('1', Promise.resolve('two'));
+    expect(await cache.get('1')).to.equal('two');
+  });
+
+  it('should be able to remove entries from the cache', async () => {
+    const cache = new ReadThroughPromiseCache<string, string>({
+      cacheParams: { cacheCapacity: 10, cacheTTL: 60_000 },
+      readThroughFunction: async () => 'one',
+    });
+
+    expect(await cache.get('1')).to.equal('one');
+    cache.put('1', Promise.resolve('two'));
+    expect(await cache.get('1')).to.equal('two');
+    cache.remove('1');
+    expect(await cache.get('1')).to.equal('one');
+  });
+
+  it('should be able to clear the cache', async () => {
+    const cache = new ReadThroughPromiseCache<string, string>({
+      cacheParams: { cacheCapacity: 10, cacheTTL: 60_000 },
+      readThroughFunction: async () => 'one',
+    });
+
+    expect(cache.size()).to.equal(0);
+    expect(await cache.get('1')).to.equal('one');
+    expect(cache.size()).to.equal(1);
+    cache.clear();
+    expect(cache.size()).to.equal(0);
+  });
+
+  it('should be able to get the size of the cache', async () => {
+    const cache = new ReadThroughPromiseCache<string, string>({
+      cacheParams: { cacheCapacity: 10, cacheTTL: 60_000 },
+      readThroughFunction: async () => 'one',
+    });
+
+    expect(cache.size()).to.equal(0);
+    expect(await cache.get('1')).to.equal('one');
+    expect(cache.size()).to.equal(1);
+  });
+
+  it('should pass readThroughData to readThroughFunction if provided', async () => {
+    let testTracker = 0;
+    const testFunction = async (
+      key: string,
+      readThroughData?: string,
+    ): Promise<string | undefined> => {
+      if (testTracker < 1) {
+        testTracker++;
+        return readThroughData;
+      } else {
+        return 'two';
+      }
+    };
+
+    const cache = new ReadThroughPromiseCache<
+      string,
+      string | undefined,
+      string
+    >({
+      cacheParams: { cacheCapacity: 10, cacheTTL: 60_000 },
+      readThroughFunction: testFunction,
+    });
+
+    expect(await cache.get('1', 'one')).to.equal('one');
+    expect(await cache.get('1', 'two')).to.equal('one');
+    cache.clear();
+    expect(await cache.get('1', 'three')).to.equal('two');
+    expect(await cache.get('1')).to.equal('two');
+    cache.clear();
+    testTracker = 0;
+    expect(await cache.get('1')).to.be.undefined;
+  });
 });
