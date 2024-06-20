@@ -131,7 +131,7 @@ describe('ReadThroughPromiseCache Class', () => {
     expect(await cache.get('1')).to.equal('two');
   });
 
-  it('should be able to manually remove entries from the cache', async () => {
+  it('should be able to remove entries from the cache', async () => {
     const cache = new ReadThroughPromiseCache<string, string>({
       cacheParams: { cacheCapacity: 10, cacheTTL: 60_000 },
       readThroughFunction: async () => 'one',
