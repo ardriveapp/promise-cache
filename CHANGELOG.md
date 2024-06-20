@@ -1,3 +1,11 @@
+# [1.2.0](https://github.com/ardriveapp/promise-cache/compare/v1.1.4...v1.2.0) (2024-06-20)
+
+
+### Features
+
+* **read through promise cache:** add apis of promisecache to readthroughpromisecache PE-6327 ([e413eae](https://github.com/ardriveapp/promise-cache/commit/e413eae7e9b42cf5acd393ee42ee571e7ab6bbf4))
+* **read through promise cache:** support ferrying of read through data to read through fn PE-6327 ([e354686](https://github.com/ardriveapp/promise-cache/commit/e35468611bb829ae5a807b19b45623e4655aef32))
+
 ## [1.1.4](https://github.com/ardriveapp/promise-cache/compare/v1.1.3...v1.1.4) (2023-09-19)
 
 
