@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "build": "tsc --project ./tsconfig.prod.json",
-    "test": "nyc mocha",
+    "test": "tsc -p ./tsconfig.json --noEmit && nyc mocha",
     "prepare": "husky install",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
