@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/ardriveapp/promise-cache/compare/v1.2.0...v1.3.0) (2024-06-25)
+
+
+### Features
+
+* **ts:** make ferried parameter to ReadThroughPromiseCache be dependently void ([7e4638b](https://github.com/ardriveapp/promise-cache/commit/7e4638b376fdf51f0bcee4b58ea5ddc2c216bcde))
+
 # [1.2.0](https://github.com/ardriveapp/promise-cache/compare/v1.1.4...v1.2.0) (2024-06-20)
 
 
