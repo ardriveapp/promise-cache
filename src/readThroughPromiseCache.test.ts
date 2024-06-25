@@ -185,7 +185,7 @@ describe('ReadThroughPromiseCache Class', () => {
     const cache = new ReadThroughPromiseCache<
       string,
       string | undefined,
-      string
+      string | void
     >({
       cacheParams: { cacheCapacity: 10, cacheTTL: 60_000 },
       readThroughFunction: testFunction,
