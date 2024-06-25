@@ -16,17 +16,27 @@
  */
 import { CacheParams, PromiseCache } from './promiseCache';
 
+interface ReadThroughFunctionWithNoData<K, V> {
+  (key: K): Promise<V>;
+}
+
+interface ReadThroughFunctionWithData<K, V, D> {
+  (key: K, readThroughData: D): Promise<V>;
+}
+
+type ReadThroughFunction<K, V, D = void> = D extends void
+  ? ReadThroughFunctionWithNoData<K, V>
+  : ReadThroughFunctionWithData<K, V, D>;
+
 interface ReadThroughPromiseCacheParams<K, V, D = void> {
-  readThroughFunction: (key: K, readThroughData?: D) => Promise<V>;
   cacheParams: CacheParams;
+  readThroughFunction: ReadThroughFunction<K, V, D>;
 }
 
 export class ReadThroughPromiseCache<K, V, D = void> {
   private readonly cache: PromiseCache<K, V>;
-  private readonly readThroughFunction: (
-    key: K,
-    readThroughData?: D,
-  ) => Promise<V>;
+  private readonly readThroughFunction: ReadThroughFunction<K, V, D>;
+
   constructor({
     cacheParams,
     readThroughFunction,
@@ -35,20 +45,17 @@ export class ReadThroughPromiseCache<K, V, D = void> {
     this.readThroughFunction = readThroughFunction;
   }
 
-  async get(key: K, readThroughData?: D): Promise<V> {
+  async get(key: K, ...args: D extends void ? [] : [D]): Promise<V> {
     const cachedValue = this.cache.get(key);
     if (cachedValue) {
       return cachedValue;
     }
 
-    const valuePromise = this.readThroughFunction(key, readThroughData);
-
+    const valuePromise = this.readThroughFunction(key, ...(args as [D]));
     valuePromise.catch(() => {
       this.cache.remove(key);
     });
-
     this.cache.put(key, valuePromise);
-
     return valuePromise;
   }
 
