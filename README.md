@@ -135,6 +135,10 @@ const { status: refreshedStatus, data:refreshedData } = await readThroughCache.g
 
 Creates a new `ReadThroughPromiseCache` instance with the specified capacity and time-to-live (TTL) for cached items and `readThroughFunction` that will be called when the cache does not contain the key.
 
+#### `getWithStatus(key: K): Promise<{status: 'hit' | 'miss', data: V}>`
+
+Returns a Promise'd object, with the key 'data' pre-awaited and 'status' key indicating if it was a hit or a miss.
+
 ## Note
 
 The method `cacheKeyString(key: K): string` is used internally to create cache keys. The default implementation may not sufficiently differentiate keys for certain object types, depending on their `toJSON` implementation. You may need to override this method if you encounter issues.

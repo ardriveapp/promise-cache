@@ -57,6 +57,25 @@ describe('ReadThroughPromiseCache Class', () => {
     expect(await cache.get('1')).to.equal('one'); // the original cached value has not expired
   });
 
+  it('should correctly show cache status with .getWithStatus method', async () => {
+    const testFunction = async (): Promise<string> => {
+      return 'always';
+    };
+    const cache = new ReadThroughPromiseCache<void, string>({
+      cacheParams: { cacheCapacity: 10, cacheTTL: 60_000 },
+      readThroughFunction: testFunction,
+    });
+
+    expect(await cache.getWithStatus()).to.deep.equal({
+      status: 'miss',
+      data: 'always',
+    });
+    expect(await cache.getWithStatus()).to.deep.equal({
+      status: 'hit',
+      data: 'always',
+    }); // the original cached value has not expired
+  });
+
   it('should throw error if readThroughFunction throws', async () => {
     let testTracker = 0;
     const testFunction = async (): Promise<string> => {

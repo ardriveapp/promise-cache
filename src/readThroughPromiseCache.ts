@@ -33,6 +33,8 @@ interface ReadThroughPromiseCacheParams<K, V, D = void> {
   readThroughFunction: ReadThroughFunction<K, V, D>;
 }
 
+export type ReadThroughPromiseCacheStatus = 'hit' | 'miss';
+
 export class ReadThroughPromiseCache<K, V, D = void> {
   private readonly cache: PromiseCache<K, V>;
   private readonly readThroughFunction: ReadThroughFunction<K, V, D>;
@@ -57,6 +59,23 @@ export class ReadThroughPromiseCache<K, V, D = void> {
     });
     this.cache.put(key, valuePromise);
     return valuePromise;
+  }
+
+  async getWithStatus(
+    key: K,
+    ...args: D extends void ? [] : [D]
+  ): Promise<{ status: ReadThroughPromiseCacheStatus; data: V }> {
+    const cachedValue = this.cache.get(key);
+    if (cachedValue) {
+      return { data: await cachedValue, status: 'hit' };
+    }
+
+    const valuePromise = this.readThroughFunction(key, ...(args as [D]));
+    valuePromise.catch(() => {
+      this.cache.remove(key);
+    });
+    this.cache.put(key, valuePromise);
+    return { data: await valuePromise, status: 'miss' };
   }
 
   put(key: K, value: Promise<V>): Promise<V> {
