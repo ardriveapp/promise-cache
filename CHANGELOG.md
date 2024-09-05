@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/ardriveapp/promise-cache/compare/v1.3.0...v1.4.0) (2024-09-05)
+
+
+### Features
+
+* add new method '.getWithStatus' to ReadThroughPromiseCache ([67981c1](https://github.com/ardriveapp/promise-cache/commit/67981c101143c50e56feeb2d87b78f45e6ea176f))
+
 # [1.3.0](https://github.com/ardriveapp/promise-cache/compare/v1.2.0...v1.3.0) (2024-06-25)
 
 
