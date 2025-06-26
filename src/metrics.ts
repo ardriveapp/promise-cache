@@ -38,53 +38,54 @@ export class CacheMetrics {
     const registry = config.registry || register;
     this.prefix = config.prefix ?? 'promise_cache';
     this.defaultLabels = { cache: cacheIdentifier, ...config.labels };
+    const labelNames = Object.keys(this.defaultLabels);
 
     this.hitCounter = new Counter({
       name: `${this.prefix}_hits_total`,
       help: 'Number of cache hits',
-      labelNames: ['cache'],
+      labelNames,
       registers: [registry],
     });
 
     this.missCounter = new Counter({
       name: `${this.prefix}_misses_total`,
       help: 'Number of cache misses',
-      labelNames: ['cache'],
+      labelNames,
       registers: [registry],
     });
 
     this.putCounter = new Counter({
       name: `${this.prefix}_puts_total`,
       help: 'Number of cache put operations',
-      labelNames: ['cache'],
+      labelNames,
       registers: [registry],
     });
 
     this.removeCounter = new Counter({
       name: `${this.prefix}_removes_total`,
       help: 'Number of cache remove operations',
-      labelNames: ['cache'],
+      labelNames,
       registers: [registry],
     });
 
     this.clearCounter = new Counter({
       name: `${this.prefix}_clears_total`,
       help: 'Number of cache clear operations',
-      labelNames: ['cache'],
+      labelNames,
       registers: [registry],
     });
 
     this.evictionCounter = new Counter({
       name: `${this.prefix}_evictions_total`,
       help: 'Number of cache evictions due to TTL or capacity',
-      labelNames: ['cache'],
+      labelNames,
       registers: [registry],
     });
 
     this.sizeGauge = new Gauge({
       name: `${this.prefix}_size`,
       help: 'Current number of items in cache',
-      labelNames: ['cache'],
+      labelNames,
       registers: [registry],
     });
   }
