@@ -18,6 +18,7 @@
 import { expect } from 'chai';
 import { Registry, register } from 'prom-client';
 import { PromiseCache, ReadThroughPromiseCache } from './index';
+import { CacheMetrics } from './metrics';
 
 describe('Metrics functionality', () => {
   let registry: Registry;
@@ -36,7 +37,6 @@ describe('Metrics functionality', () => {
       const cache = new PromiseCache<string, string>({
         cacheCapacity: 10,
         cacheTTL: 60000,
-        enableMetrics: true,
         metricsConfig: {
           registry,
           prefix: 'test_cache',
@@ -64,7 +64,6 @@ describe('Metrics functionality', () => {
       const cache = new PromiseCache<string, string>({
         cacheCapacity: 10,
         cacheTTL: 60000,
-        enableMetrics: true,
         metricsConfig: {
           registry,
           prefix: 'test_cache',
@@ -84,7 +83,6 @@ describe('Metrics functionality', () => {
       const cache = new PromiseCache<string, string>({
         cacheCapacity: 10,
         cacheTTL: 60000,
-        enableMetrics: true,
         metricsConfig: {
           registry,
           prefix: 'test_cache',
@@ -102,7 +100,6 @@ describe('Metrics functionality', () => {
       const cache = new PromiseCache<string, string>({
         cacheCapacity: 10,
         cacheTTL: 60000,
-        enableMetrics: true,
         metricsConfig: {
           registry,
           prefix: 'test_cache',
@@ -122,7 +119,6 @@ describe('Metrics functionality', () => {
       const cache = new PromiseCache<string, string>({
         cacheCapacity: 10,
         cacheTTL: 60000,
-        enableMetrics: true,
         metricsConfig: {
           registry,
           prefix: 'test_cache',
@@ -142,7 +138,6 @@ describe('Metrics functionality', () => {
       const cache = new PromiseCache<string, string>({
         cacheCapacity: 2,
         cacheTTL: 60000,
-        enableMetrics: true,
         metricsConfig: {
           registry,
           prefix: 'test_cache',
@@ -162,7 +157,6 @@ describe('Metrics functionality', () => {
       const cache = new PromiseCache<string, string>({
         cacheCapacity: 10,
         cacheTTL: 60000,
-        enableMetrics: true,
         metricsConfig: {
           registry,
           prefix: 'test_cache',
@@ -191,7 +185,6 @@ describe('Metrics functionality', () => {
           cacheTTL: 60000,
         },
         readThroughFunction: async (key: string) => `value-${key}`,
-        enableMetrics: true,
         metricsConfig: {
           registry,
           prefix: 'test_rt_cache_1',
@@ -225,7 +218,6 @@ describe('Metrics functionality', () => {
           }
           return `value-${key}`;
         },
-        enableMetrics: true,
         metricsConfig: {
           registry,
           prefix: 'test_rt_cache_3',
@@ -242,20 +234,19 @@ describe('Metrics functionality', () => {
       expect(cache.size()).to.equal(0);
     });
 
-    it('should handle undefined metricsConfig', async () => {
+    it('should not enable metrics with an undefined metricsConfig', async () => {
       const cache = new ReadThroughPromiseCache<string, string>({
         cacheParams: {
           cacheCapacity: 10,
           cacheTTL: 60000,
         },
         readThroughFunction: async (key: string) => `value-${key}`,
-        enableMetrics: true,
       });
 
       await cache.get('key1');
 
       const metrics = await register.metrics();
-      expect(metrics).to.include('misses_total{cache="promise_cache"} 1');
+      expect(metrics).to.equal('\n');
     });
 
     it('should handle an empty metricsConfig', async () => {
@@ -265,7 +256,6 @@ describe('Metrics functionality', () => {
           cacheTTL: 60000,
         },
         readThroughFunction: async (key: string) => `value-${key}`,
-        enableMetrics: true,
         metricsConfig: {},
       });
 
@@ -282,7 +272,6 @@ describe('Metrics functionality', () => {
           cacheTTL: 60000,
         },
         readThroughFunction: async (key: string) => `value-${key}`,
-        enableMetrics: true,
         metricsConfig: {
           registry,
         },
@@ -303,7 +292,6 @@ describe('Metrics functionality', () => {
           cacheTTL: 60000,
         },
         readThroughFunction: async (key: string) => `value-${key}`,
-        enableMetrics: true,
         metricsConfig: {
           prefix: '',
         },
@@ -322,7 +310,6 @@ describe('Metrics functionality', () => {
           cacheTTL: 60000,
         },
         readThroughFunction: async (key: string) => `value-${key}`,
-        enableMetrics: true,
         metricsConfig: {
           prefix: 'test_rt_cache_empty_registry',
         },
@@ -343,7 +330,6 @@ describe('Metrics functionality', () => {
           cacheTTL: 60000,
         },
         readThroughFunction: async (key: string) => `value-${key}`,
-        enableMetrics: true,
         metricsConfig: {
           registry,
           prefix: 'test_rt_cache_metrics_obj',
@@ -364,6 +350,17 @@ describe('Metrics functionality', () => {
 
       const metrics = cache.getMetrics();
       expect(metrics).to.be.undefined;
+    });
+  });
+
+  describe('CacheMetrics constructor', () => {
+    it('should create metrics with default values', async () => {
+      const cacheMetrics = new CacheMetrics('test_cache');
+      cacheMetrics.recordHit();
+      const metrics = await register.metrics();
+      expect(metrics).to.include(
+        'promise_cache_hits_total{cache="test_cache"} 1',
+      );
     });
   });
 });

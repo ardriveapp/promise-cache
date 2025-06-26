@@ -21,22 +21,16 @@ import { CacheMetrics, CacheMetricsConfig } from './metrics';
 export interface CacheParams {
   cacheCapacity: number;
   cacheTTL: number;
-  enableMetrics?: boolean;
   metricsConfig?: CacheMetricsConfig;
 }
 export class PromiseCache<K, V> {
   private readonly cache: Cache<string, Promise<V>>;
   protected readonly metrics?: CacheMetrics;
 
-  constructor({
-    cacheCapacity,
-    cacheTTL,
-    enableMetrics = false,
-    metricsConfig,
-  }: CacheParams) {
+  constructor({ cacheCapacity, cacheTTL, metricsConfig }: CacheParams) {
     this.cache = EphemeralCache<string, Promise<V>>(cacheCapacity, cacheTTL);
 
-    if (enableMetrics) {
+    if (metricsConfig !== undefined) {
       this.metrics = new CacheMetrics('promise_cache', metricsConfig);
     }
   }

@@ -32,7 +32,6 @@ type ReadThroughFunction<K, V, D = void> = D extends void
 interface ReadThroughPromiseCacheParams<K, V, D = void> {
   cacheParams: CacheParams;
   readThroughFunction: ReadThroughFunction<K, V, D>;
-  enableMetrics?: boolean;
   metricsConfig?: CacheMetricsConfig;
 }
 
@@ -45,12 +44,10 @@ export class ReadThroughPromiseCache<K, V, D = void> {
   constructor({
     cacheParams,
     readThroughFunction,
-    enableMetrics = false,
     metricsConfig,
   }: ReadThroughPromiseCacheParams<K, V, D>) {
     this.cache = new PromiseCache({
       ...cacheParams,
-      enableMetrics,
       metricsConfig,
     });
     this.readThroughFunction = readThroughFunction;
