@@ -36,8 +36,8 @@ export class CacheMetrics {
 
   constructor(cacheIdentifier: string, config: CacheMetricsConfig = {}) {
     const registry = config.registry || register;
-    this.prefix = config.prefix ?? 'promise_cache';
-    this.defaultLabels = { cache: cacheIdentifier, ...config.labels };
+    this.prefix = config.prefix ?? `${cacheIdentifier}`;
+    this.defaultLabels = { ...config.labels };
     const labelNames = Object.keys(this.defaultLabels);
 
     this.hitCounter = new Counter({
