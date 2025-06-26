@@ -60,6 +60,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@alexsasharegan/simple-cache": "^3.3.3"
+    "@alexsasharegan/simple-cache": "^3.3.3",
+    "prom-client": "^15.1.3"
   }
 }

@@ -16,16 +16,29 @@
  */
 
 import { Cache, EphemeralCache } from '@alexsasharegan/simple-cache';
+import { CacheMetrics, CacheMetricsConfig } from './metrics';
 
 export interface CacheParams {
   cacheCapacity: number;
   cacheTTL: number;
+  enableMetrics?: boolean;
+  metricsConfig?: CacheMetricsConfig;
 }
 export class PromiseCache<K, V> {
   private readonly cache: Cache<string, Promise<V>>;
+  protected readonly metrics?: CacheMetrics;
 
-  constructor({ cacheCapacity, cacheTTL }: CacheParams) {
+  constructor({
+    cacheCapacity,
+    cacheTTL,
+    enableMetrics = false,
+    metricsConfig,
+  }: CacheParams) {
     this.cache = EphemeralCache<string, Promise<V>>(cacheCapacity, cacheTTL);
+
+    if (enableMetrics) {
+      this.metrics = new CacheMetrics('promise_cache', metricsConfig);
+    }
   }
 
   cacheKeyString(key: K): string {
@@ -36,22 +49,39 @@ export class PromiseCache<K, V> {
 
   put(key: K, value: Promise<V>): Promise<V> {
     this.cache.write(this.cacheKeyString(key), value);
+    this.metrics?.recordPut();
+    this.metrics?.updateSizeDeferred(() => this.cache.size());
     return value;
   }
 
   get(key: K): Promise<V> | undefined {
-    return this.cache.read(this.cacheKeyString(key));
+    const result = this.cache.read(this.cacheKeyString(key));
+    if (result !== undefined) {
+      this.metrics?.recordHit();
+    } else {
+      this.metrics?.recordMiss();
+    }
+    this.metrics?.updateSizeDeferred(() => this.cache.size());
+    return result;
   }
 
   remove(key: K): void {
     this.cache.remove(this.cacheKeyString(key));
+    this.metrics?.recordRemove();
+    this.metrics?.updateSizeDeferred(() => this.cache.size());
   }
 
   clear(): void {
     this.cache.clear();
+    this.metrics?.recordClear();
+    this.metrics?.updateSize(0);
   }
 
   size(): number {
     return this.cache.size();
+  }
+
+  getMetrics(): CacheMetrics | undefined {
+    return this.metrics;
   }
 }
