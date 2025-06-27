@@ -254,6 +254,36 @@ describe('Metrics functionality', () => {
       const metrics = cache.getMetrics();
       expect(metrics).to.not.be.undefined;
     });
+
+    it('should record evictions', async () => {
+      const cache = new ReadThroughPromiseCache<string, string>({
+        cacheParams: { cacheCapacity: 2, cacheTTL: 60000 },
+        readThroughFunction: async (key: string) => `value-${key}`,
+        metricsConfig: { registry, prefix: 'test_rt_cache_eviction' },
+      });
+
+      await cache.get('key1');
+      await cache.get('key2');
+      await cache.get('key3'); // This should cause an eviction
+
+      const metrics = await registry.metrics();
+      expect(metrics).to.include('test_rt_cache_eviction_evictions_total 1');
+    });
+
+    it('should not record an eviction when at capacity if existing key is updated', async () => {
+      const cache = new ReadThroughPromiseCache<string, string>({
+        cacheParams: { cacheCapacity: 2, cacheTTL: 60000 },
+        readThroughFunction: async (key: string) => `value-${key}`,
+        metricsConfig: { registry, prefix: 'test_rt_cache_no_eviction' },
+      });
+
+      await cache.get('key1');
+      await cache.get('key2');
+      await cache.get('key1'); // This should not cause an eviction
+
+      const metrics = await registry.metrics();
+      expect(metrics).to.include('test_rt_cache_no_eviction_evictions_total 0');
+    });
   });
 
   describe('Metrics disabled by default', () => {
