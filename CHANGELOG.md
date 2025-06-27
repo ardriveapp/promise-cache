@@ -1,3 +1,11 @@
+# [1.2.0-alpha.2](https://github.com/ardriveapp/promise-cache/compare/v1.2.0-alpha.1...v1.2.0-alpha.2) (2025-06-27)
+
+
+### Features
+
+* **cache:** deprecate cacheTTL in favor of cacheTTLMills PE-8242 ([397baea](https://github.com/ardriveapp/promise-cache/commit/397baeab1d1949c0715030dba1b33bee6b272b78))
+* **metrics:** drop cacheId in favor of prefix PE-8242 ([baddd50](https://github.com/ardriveapp/promise-cache/commit/baddd50d25b31aec7ef5a74ce9724491f95edef9))
+
 # [1.2.0-alpha.1](https://github.com/ardriveapp/promise-cache/compare/v1.1.4-alpha.1...v1.2.0-alpha.1) (2025-06-27)
 
 
