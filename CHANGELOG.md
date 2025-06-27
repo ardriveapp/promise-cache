@@ -1,3 +1,10 @@
+# [1.2.0-alpha.3](https://github.com/ardriveapp/promise-cache/compare/v1.2.0-alpha.2...v1.2.0-alpha.3) (2025-06-27)
+
+
+### Features
+
+* **metrics:** initialize metrics to 0 PE-8242 ([89882c1](https://github.com/ardriveapp/promise-cache/commit/89882c15b57476efe70b370339782388197654fb))
+
 # [1.2.0-alpha.2](https://github.com/ardriveapp/promise-cache/compare/v1.2.0-alpha.1...v1.2.0-alpha.2) (2025-06-27)
 
 
