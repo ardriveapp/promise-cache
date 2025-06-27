@@ -36,6 +36,7 @@ export type CacheParams =
 export class PromiseCache<K, V> {
   private readonly cache: Cache<string, Promise<V>>;
   protected readonly metrics?: CacheMetrics;
+  protected readonly cacheCapacity: number;
 
   constructor({
     cacheCapacity,
@@ -47,6 +48,7 @@ export class PromiseCache<K, V> {
       cacheCapacity,
       cacheTTLMillis ?? cacheTTL,
     );
+    this.cacheCapacity = cacheCapacity;
 
     if (metricsConfig !== undefined) {
       this.metrics = new CacheMetrics(metricsConfig);
@@ -60,6 +62,12 @@ export class PromiseCache<K, V> {
   }
 
   put(key: K, value: Promise<V>): Promise<V> {
+    if (
+      this.size() >= this.cacheCapacity &&
+      !this.cache.read(this.cacheKeyString(key))
+    ) {
+      this.metrics?.recordEviction();
+    }
     this.cache.write(this.cacheKeyString(key), value);
     this.metrics?.recordPut();
     this.metrics?.updateSizeDeferred(() => this.cache.size());
