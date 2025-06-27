@@ -1,3 +1,10 @@
+# [1.2.0-alpha.4](https://github.com/ardriveapp/promise-cache/compare/v1.2.0-alpha.3...v1.2.0-alpha.4) (2025-06-27)
+
+
+### Features
+
+* **metrics:** record evictions PE-8242 ([b213e88](https://github.com/ardriveapp/promise-cache/commit/b213e889aca9fa9ffd815800e9318fb9f0950cca))
+
 # [1.2.0-alpha.3](https://github.com/ardriveapp/promise-cache/compare/v1.2.0-alpha.2...v1.2.0-alpha.3) (2025-06-27)
 
 
