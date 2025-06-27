@@ -18,17 +18,35 @@
 import { Cache, EphemeralCache } from '@alexsasharegan/simple-cache';
 import { CacheMetrics, CacheMetricsConfig } from './metrics';
 
-export interface CacheParams {
-  cacheCapacity: number;
-  cacheTTL: number;
-  metricsConfig?: CacheMetricsConfig;
-}
+export type CacheParams =
+  | {
+      cacheCapacity: number;
+      /** Time-to-live in milliseconds (deprecated, use cacheTTLMillis instead) */
+      cacheTTL: number;
+      cacheTTLMillis?: never;
+      metricsConfig?: CacheMetricsConfig;
+    }
+  | {
+      cacheCapacity: number;
+      cacheTTL?: never;
+      /** Time-to-live in milliseconds */
+      cacheTTLMillis: number;
+      metricsConfig?: CacheMetricsConfig;
+    };
 export class PromiseCache<K, V> {
   private readonly cache: Cache<string, Promise<V>>;
   protected readonly metrics?: CacheMetrics;
 
-  constructor({ cacheCapacity, cacheTTL, metricsConfig }: CacheParams) {
-    this.cache = EphemeralCache<string, Promise<V>>(cacheCapacity, cacheTTL);
+  constructor({
+    cacheCapacity,
+    cacheTTL,
+    cacheTTLMillis,
+    metricsConfig,
+  }: CacheParams) {
+    this.cache = EphemeralCache<string, Promise<V>>(
+      cacheCapacity,
+      cacheTTLMillis ?? cacheTTL,
+    );
 
     if (metricsConfig !== undefined) {
       this.metrics = new CacheMetrics(metricsConfig);

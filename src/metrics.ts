@@ -20,9 +20,8 @@ import { Counter, Gauge, Registry, register } from 'prom-client';
 // Resulting metrics will be of the form:
 // <prefix ?? "promise_cache">_<metric name>{cache_id=<cacheId>, <label name 1>=<label value 1>, ..., <label name N>=<label value N>} <metric value>
 export interface CacheMetricsConfig {
-  cacheId: string;
+  prefix: string;
   registry?: Registry;
-  prefix?: string;
   labels?: Record<string, string>;
 }
 
@@ -39,11 +38,8 @@ export class CacheMetrics {
 
   constructor(config: CacheMetricsConfig) {
     const registry = config.registry || register;
-    this.prefix =
-      config.prefix != undefined && config.prefix.length > 0
-        ? config.prefix
-        : 'promise_cache';
-    this.defaultLabels = { cache_id: config.cacheId, ...config.labels };
+    this.prefix = config.prefix || 'promise_cache';
+    this.defaultLabels = { ...config.labels };
     const labelNames = Object.keys(this.defaultLabels);
 
     this.hitCounter = new Counter({
