@@ -125,7 +125,7 @@ describe('Metrics functionality', () => {
       });
 
       const metrics = cache.getMetrics();
-      metrics!.recordEviction();
+      metrics!.recordEvictions();
 
       const metricsOutput = await registry.metrics();
       expect(metricsOutput).to.include('test_prefix_evictions_total 1');
@@ -149,6 +149,60 @@ describe('Metrics functionality', () => {
       expect(metricsObj.clears).to.not.be.undefined;
       expect(metricsObj.evictions).to.not.be.undefined;
       expect(metricsObj.size).to.not.be.undefined;
+    });
+
+    it('should record evictions due to ttls on put', async () => {
+      const cache = new PromiseCache<string, string>({
+        cacheCapacity: 2,
+        cacheTTL: 10, // 10 milliseconds TTL
+        metricsConfig: { registry, prefix: 'test_prefix_eviction' },
+      });
+
+      await cache.put('key1', Promise.resolve('value1'));
+
+      // Wait for TTL to expire
+      await new Promise((resolve) => setTimeout(resolve, 11));
+
+      // Any read or write action will trigger a deferred eviction
+      await cache.put('key2', Promise.resolve('value2'));
+
+      // Move to next tick to allow eviction to be processed
+      await new Promise(process.nextTick);
+
+      const metrics = await registry.metrics();
+
+      // Control for race conditions by parsing the eviction total and asserting the minimum expected
+      const evictionCount = +(
+        metrics.match(/test_prefix_eviction_evictions_total (\d+)/)?.[1] ?? 0
+      );
+      expect(evictionCount).to.be.at.least(1);
+    });
+
+    it('should record evictions due to ttls on get', async () => {
+      const cache = new PromiseCache<string, string>({
+        cacheCapacity: 2,
+        cacheTTL: 10, // 10 milliseconds TTL
+        metricsConfig: { registry, prefix: 'test_prefix_eviction' },
+      });
+
+      await cache.put('key1', Promise.resolve('value1'));
+
+      // Wait for TTL to expire
+      await new Promise((resolve) => setTimeout(resolve, 11));
+
+      // Any read or write action will trigger a deferred eviction
+      await cache.get('key1');
+
+      // Move to next tick to allow eviction to be processed
+      await new Promise(process.nextTick);
+
+      const metrics = await registry.metrics();
+
+      // Control for race conditions by parsing the eviction total and asserting the minimum expected
+      const evictionCount = +(
+        metrics.match(/test_prefix_eviction_evictions_total (\d+)/)?.[1] ?? 0
+      );
+      expect(evictionCount).to.be.at.least(1);
     });
   });
 

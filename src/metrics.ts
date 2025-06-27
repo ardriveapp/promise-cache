@@ -111,8 +111,8 @@ export class CacheMetrics {
     this.clearCounter.inc(this.defaultLabels);
   }
 
-  recordEviction(): void {
-    this.evictionCounter.inc(this.defaultLabels);
+  recordEvictions(count: number = 1): void {
+    this.evictionCounter.inc(this.defaultLabels, count);
   }
 
   updateSize(size: number): void {
