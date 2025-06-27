@@ -40,55 +40,54 @@ export class CacheMetrics {
     const registry = config.registry || register;
     this.prefix = config.prefix || 'promise_cache';
     this.defaultLabels = { ...config.labels };
-    const labelNames = Object.keys(this.defaultLabels);
 
-    this.hitCounter = new Counter({
+    this.hitCounter = createCounter({
       name: `${this.prefix}_hits_total`,
       help: 'Number of cache hits',
-      labelNames,
-      registers: [registry],
+      labels: this.defaultLabels,
+      registry,
     });
 
-    this.missCounter = new Counter({
+    this.missCounter = createCounter({
       name: `${this.prefix}_misses_total`,
       help: 'Number of cache misses',
-      labelNames,
-      registers: [registry],
+      labels: this.defaultLabels,
+      registry,
     });
 
-    this.putCounter = new Counter({
+    this.putCounter = createCounter({
       name: `${this.prefix}_puts_total`,
       help: 'Number of cache put operations',
-      labelNames,
-      registers: [registry],
+      labels: this.defaultLabels,
+      registry,
     });
 
-    this.removeCounter = new Counter({
+    this.removeCounter = createCounter({
       name: `${this.prefix}_removes_total`,
       help: 'Number of cache remove operations',
-      labelNames,
-      registers: [registry],
+      labels: this.defaultLabels,
+      registry,
     });
 
-    this.clearCounter = new Counter({
+    this.clearCounter = createCounter({
       name: `${this.prefix}_clears_total`,
       help: 'Number of cache clear operations',
-      labelNames,
-      registers: [registry],
+      labels: this.defaultLabels,
+      registry,
     });
 
-    this.evictionCounter = new Counter({
+    this.evictionCounter = createCounter({
       name: `${this.prefix}_evictions_total`,
       help: 'Number of cache evictions due to TTL or capacity',
-      labelNames,
-      registers: [registry],
+      labels: this.defaultLabels,
+      registry,
     });
 
-    this.sizeGauge = new Gauge({
+    this.sizeGauge = createGauge({
       name: `${this.prefix}_size`,
       help: 'Current number of items in cache',
-      labelNames,
-      registers: [registry],
+      labels: this.defaultLabels,
+      registry,
     });
   }
 
@@ -146,4 +145,46 @@ export class CacheMetrics {
       size: this.sizeGauge,
     };
   }
+}
+
+function createCounter({
+  name,
+  help,
+  labels,
+  registry,
+}: {
+  name: string;
+  help: string;
+  labels: Record<string, string>;
+  registry: Registry;
+}): Counter<string> {
+  const counter = new Counter({
+    name,
+    help,
+    labelNames: Object.keys(labels),
+    registers: [registry],
+  });
+  counter.inc(labels, 0); // Initialize to zero
+  return counter;
+}
+
+function createGauge({
+  name,
+  help,
+  labels,
+  registry,
+}: {
+  name: string;
+  help: string;
+  labels: Record<string, string>;
+  registry: Registry;
+}): Gauge<string> {
+  const gauge = new Gauge({
+    name,
+    help,
+    labelNames: Object.keys(labels),
+    registers: [registry],
+  });
+  gauge.set(labels, 0); // Initialize to zero
+  return gauge;
 }
