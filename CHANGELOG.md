@@ -1,3 +1,10 @@
+# [1.2.0-alpha.5](https://github.com/ardriveapp/promise-cache/compare/v1.2.0-alpha.4...v1.2.0-alpha.5) (2025-06-27)
+
+
+### Features
+
+* **metrics:** count deferred evictions PE-8242 ([cd4997e](https://github.com/ardriveapp/promise-cache/commit/cd4997e7016346c9e5461aa50a9821d7dd5b00bf))
+
 # [1.2.0-alpha.4](https://github.com/ardriveapp/promise-cache/compare/v1.2.0-alpha.3...v1.2.0-alpha.4) (2025-06-27)
 
 
