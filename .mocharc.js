@@ -9,6 +9,6 @@ module.exports = {
   spec: ['src/**/*.test.ts'],
   require: ['ts-node/register/transpile-only'],
   timeout: '10000', // 10 seconds
-  parallel: true,
+  parallel: false, // some tests use a global registry
   recursive: true,
 };

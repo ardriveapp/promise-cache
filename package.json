@@ -1,6 +1,6 @@
 {
   "name": "@ardrive/ardrive-promise-cache",
-  "version": "1.1.4-alpha.1",
+  "version": "1.4.0",
   "description": "A promise cache utility.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "build": "tsc --project ./tsconfig.prod.json",
-    "test": "nyc mocha",
+    "test": "tsc -p ./tsconfig.json --noEmit && nyc mocha",
     "prepare": "husky install",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
@@ -50,7 +50,7 @@
     "husky": "^8.0.3",
     "mocha": "^10.0.0",
     "nyc": "^15.1.0",
-    "prettier": "^3.0.1",
+    "prettier": "^3.6.1",
     "semantic-release": "^21.0.7",
     "sinon": "^15.2.0",
     "ts-node": "^10.9.1",
@@ -60,6 +60,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@alexsasharegan/simple-cache": "^3.3.3"
+    "@alexsasharegan/simple-cache": "^3.3.3",
+    "prom-client": "^14.2.0"
   }
 }

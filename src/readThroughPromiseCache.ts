@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2022-2023 Permanent Data Solutions, Inc. All Rights Reserved.
+ * Copyright (C) 2022-2024 Permanent Data Solutions, Inc. All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,37 +15,93 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { CacheParams, PromiseCache } from './promiseCache';
+import { CacheMetrics, CacheMetricsConfig } from './metrics';
 
-interface ReadThroughPromiseCacheParams<K, V> {
-  readThroughFunction: (key: K) => Promise<V>;
-  cacheParams: CacheParams;
+interface ReadThroughFunctionWithNoData<K, V> {
+  (key: K): Promise<V>;
 }
 
-export class ReadThroughPromiseCache<K, V> {
+interface ReadThroughFunctionWithData<K, V, D> {
+  (key: K, readThroughData: D): Promise<V>;
+}
+
+type ReadThroughFunction<K, V, D = void> = D extends void
+  ? ReadThroughFunctionWithNoData<K, V>
+  : ReadThroughFunctionWithData<K, V, D>;
+
+interface ReadThroughPromiseCacheParams<K, V, D = void> {
+  cacheParams: CacheParams;
+  readThroughFunction: ReadThroughFunction<K, V, D>;
+  metricsConfig?: CacheMetricsConfig;
+}
+
+export type ReadThroughPromiseCacheStatus = 'hit' | 'miss';
+
+export class ReadThroughPromiseCache<K, V, D = void> {
   private readonly cache: PromiseCache<K, V>;
-  private readonly readThroughFunction: (key: K) => Promise<V>;
+  private readonly readThroughFunction: ReadThroughFunction<K, V, D>;
+
   constructor({
     cacheParams,
     readThroughFunction,
-  }: ReadThroughPromiseCacheParams<K, V>) {
-    this.cache = new PromiseCache(cacheParams);
+    metricsConfig,
+  }: ReadThroughPromiseCacheParams<K, V, D>) {
+    this.cache = new PromiseCache({
+      ...cacheParams,
+      metricsConfig,
+    });
     this.readThroughFunction = readThroughFunction;
   }
 
-  async get(key: K): Promise<V> {
+  async get(key: K, ...args: D extends void ? [] : [D]): Promise<V> {
     const cachedValue = this.cache.get(key);
     if (cachedValue) {
       return cachedValue;
     }
 
-    const valuePromise = this.readThroughFunction(key);
-
+    const valuePromise = this.readThroughFunction(key, ...(args as [D]));
     valuePromise.catch(() => {
       this.cache.remove(key);
     });
-
     this.cache.put(key, valuePromise);
-
     return valuePromise;
+  }
+
+  async getWithStatus(
+    key: K,
+    ...args: D extends void ? [] : [D]
+  ): Promise<{ status: ReadThroughPromiseCacheStatus; data: V }> {
+    const cachedValue = this.cache.get(key);
+    if (cachedValue) {
+      return { data: await cachedValue, status: 'hit' };
+    }
+
+    const valuePromise = this.readThroughFunction(key, ...(args as [D]));
+    valuePromise.catch(() => {
+      this.cache.remove(key);
+    });
+    this.cache.put(key, valuePromise);
+    return { data: await valuePromise, status: 'miss' };
+  }
+
+  put(key: K, value: Promise<V>): Promise<V> {
+    this.cache.put(key, value);
+    return value;
+  }
+
+  remove(key: K): void {
+    this.cache.remove(key);
+  }
+
+  clear(): void {
+    this.cache.clear();
+  }
+
+  size(): number {
+    return this.cache.size();
+  }
+
+  getMetrics(): CacheMetrics | undefined {
+    return this.cache.getMetrics();
   }
 }

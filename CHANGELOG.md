@@ -1,3 +1,32 @@
+# [1.4.0](https://github.com/ardriveapp/promise-cache/compare/v1.3.0...v1.4.0) (2024-09-05)
+
+
+### Features
+
+* add new method '.getWithStatus' to ReadThroughPromiseCache ([67981c1](https://github.com/ardriveapp/promise-cache/commit/67981c101143c50e56feeb2d87b78f45e6ea176f))
+
+# [1.3.0](https://github.com/ardriveapp/promise-cache/compare/v1.2.0...v1.3.0) (2024-06-25)
+
+
+### Features
+
+* **ts:** make ferried parameter to ReadThroughPromiseCache be dependently void ([7e4638b](https://github.com/ardriveapp/promise-cache/commit/7e4638b376fdf51f0bcee4b58ea5ddc2c216bcde))
+
+# [1.2.0](https://github.com/ardriveapp/promise-cache/compare/v1.1.4...v1.2.0) (2024-06-20)
+
+
+### Features
+
+* **read through promise cache:** add apis of promisecache to readthroughpromisecache PE-6327 ([e413eae](https://github.com/ardriveapp/promise-cache/commit/e413eae7e9b42cf5acd393ee42ee571e7ab6bbf4))
+* **read through promise cache:** support ferrying of read through data to read through fn PE-6327 ([e354686](https://github.com/ardriveapp/promise-cache/commit/e35468611bb829ae5a807b19b45623e4655aef32))
+
+## [1.1.4](https://github.com/ardriveapp/promise-cache/compare/v1.1.3...v1.1.4) (2023-09-19)
+
+
+### Bug Fixes
+
+* remove await when putting value into promiseCache ([20ccb41](https://github.com/ardriveapp/promise-cache/commit/20ccb413f36927380c458e9d3b972351b3090b6b))
+
 ## [1.1.4-alpha.1](https://github.com/ardriveapp/promise-cache/compare/v1.1.3...v1.1.4-alpha.1) (2023-09-19)
 
 
