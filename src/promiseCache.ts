@@ -31,7 +31,7 @@ export class PromiseCache<K, V> {
     this.cache = EphemeralCache<string, Promise<V>>(cacheCapacity, cacheTTL);
 
     if (metricsConfig !== undefined) {
-      this.metrics = new CacheMetrics('promise_cache', metricsConfig);
+      this.metrics = new CacheMetrics(metricsConfig);
     }
   }
 
