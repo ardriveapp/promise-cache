@@ -38,7 +38,6 @@ describe('Metrics functionality', () => {
         cacheCapacity: 10,
         cacheTTL: 60000,
         metricsConfig: {
-          cacheId: 'test_cache',
           registry,
           prefix: 'test_prefix',
           labels: { test_label: 'test_value' },
@@ -55,10 +54,10 @@ describe('Metrics functionality', () => {
 
       const metrics = await registry.metrics();
       expect(metrics).to.include(
-        'test_prefix_hits_total{cache_id="test_cache",test_label="test_value"} 1',
+        'test_prefix_hits_total{test_label="test_value"} 1',
       );
       expect(metrics).to.include(
-        'test_prefix_misses_total{cache_id="test_cache",test_label="test_value"} 1',
+        'test_prefix_misses_total{test_label="test_value"} 1',
       );
     });
 
@@ -66,89 +65,77 @@ describe('Metrics functionality', () => {
       const cache = new PromiseCache<string, string>({
         cacheCapacity: 10,
         cacheTTL: 60000,
-        metricsConfig: {
-          cacheId: 'test_cache',
-          registry,
-          prefix: 'test_prefix',
-        },
+        metricsConfig: { registry, prefix: 'test_prefix' },
       });
 
       await cache.put('key1', Promise.resolve('value1'));
       await cache.put('key2', Promise.resolve('value2'));
 
       const metrics = await registry.metrics();
-      expect(metrics).to.include(
-        'test_prefix_puts_total{cache_id="test_cache"} 2',
-      );
+      expect(metrics).to.include('test_prefix_puts_total 2');
     });
 
     it('should track cache size', async () => {
       const cache = new PromiseCache<string, string>({
         cacheCapacity: 10,
         cacheTTL: 60000,
-        metricsConfig: { cacheId: 'test_cache', registry },
+        metricsConfig: { registry, prefix: 'test_prefix' },
       });
 
       await cache.put('key1', Promise.resolve('value1'));
       await cache.put('key2', Promise.resolve('value2'));
 
       const metrics = await registry.metrics();
-      expect(metrics).to.include('promise_cache_size{cache_id="test_cache"} 2');
+      expect(metrics).to.include('test_prefix_size 2');
     });
 
     it('should track remove operations', async () => {
       const cache = new PromiseCache<string, string>({
         cacheCapacity: 10,
         cacheTTL: 60000,
-        metricsConfig: { cacheId: 'test_cache', registry },
+        metricsConfig: { registry, prefix: 'test_prefix' },
       });
 
       await cache.put('key1', Promise.resolve('value1'));
       cache.remove('key1');
 
       const metrics = await registry.metrics();
-      expect(metrics).to.include(
-        'promise_cache_removes_total{cache_id="test_cache"} 1',
-      );
+      expect(metrics).to.include('test_prefix_removes_total 1');
     });
 
     it('should track clear operations', async () => {
       const cache = new PromiseCache<string, string>({
         cacheCapacity: 10,
         cacheTTL: 60000,
-        metricsConfig: { cacheId: 'test_cache', registry },
+        metricsConfig: { registry, prefix: 'test_prefix' },
       });
 
       await cache.put('key1', Promise.resolve('value1'));
       cache.clear();
 
       const metrics = await registry.metrics();
-      expect(metrics).to.include(
-        'promise_cache_clears_total{cache_id="test_cache"} 1',
-      );
+      expect(metrics).to.include('test_prefix_clears_total 1');
     });
 
     it('should track eviction operations when called directly', async () => {
       const cache = new PromiseCache<string, string>({
         cacheCapacity: 2,
         cacheTTL: 60000,
-        metricsConfig: { cacheId: 'test_cache', registry },
+        metricsConfig: { registry, prefix: 'test_prefix' },
       });
 
       const metrics = cache.getMetrics();
       metrics!.recordEviction();
 
       const metricsOutput = await registry.metrics();
-      expect(metricsOutput).to.include(
-        'promise_cache_evictions_total{cache_id="test_cache"} 1',
-      );
+      expect(metricsOutput).to.include('test_prefix_evictions_total 1');
     });
 
     it('should provide access to metrics objects', () => {
       const cache = new PromiseCache<string, string>({
         cacheCapacity: 10,
         cacheTTL: 60000,
-        metricsConfig: { cacheId: 'test_cache', registry },
+        metricsConfig: { registry, prefix: 'test_prefix' },
       });
 
       const metrics = cache.getMetrics();
@@ -170,11 +157,7 @@ describe('Metrics functionality', () => {
       const cache = new ReadThroughPromiseCache<string, string>({
         cacheParams: { cacheCapacity: 10, cacheTTL: 60000 },
         readThroughFunction: async (key: string) => `value-${key}`,
-        metricsConfig: {
-          cacheId: 'test_cache',
-          registry,
-          prefix: 'test_rt_cache_1',
-        },
+        metricsConfig: { registry, prefix: 'test_rt_cache_1' },
       });
 
       // First access should be a miss
@@ -184,12 +167,8 @@ describe('Metrics functionality', () => {
       await cache.get('key1');
 
       const metrics = await registry.metrics();
-      expect(metrics).to.include(
-        'test_rt_cache_1_hits_total{cache_id="test_cache"} 1',
-      );
-      expect(metrics).to.include(
-        'test_rt_cache_1_misses_total{cache_id="test_cache"} 1',
-      );
+      expect(metrics).to.include('test_rt_cache_1_hits_total 1');
+      expect(metrics).to.include('test_rt_cache_1_misses_total 1');
     });
 
     it('should remove failed promises from cache in getWithStatus', async () => {
@@ -201,11 +180,7 @@ describe('Metrics functionality', () => {
           }
           return `value-${key}`;
         },
-        metricsConfig: {
-          cacheId: 'test_cache',
-          registry,
-          prefix: 'test_rt_cache_3',
-        },
+        metricsConfig: { registry, prefix: 'test_rt_cache_3' },
       });
 
       try {
@@ -234,74 +209,46 @@ describe('Metrics functionality', () => {
       const cache = new ReadThroughPromiseCache<string, string>({
         cacheParams: { cacheCapacity: 10, cacheTTL: 60000 },
         readThroughFunction: async (key: string) => `value-${key}`,
-        metricsConfig: { cacheId: 'test_cache' },
+        metricsConfig: { prefix: 'test_cache' },
       });
 
       await cache.get('key1');
 
       const metrics = await register.metrics();
-      expect(metrics).to.include(
-        'promise_cache_misses_total{cache_id="test_cache"} 1',
-      );
+      expect(metrics).to.include('test_cache_misses_total 1');
     });
 
-    it('should handle undefined prefix in metricsConfig', async () => {
+    it('should default to prefix "promise_cache" for a zero length prefix', async () => {
       const cache = new ReadThroughPromiseCache<string, string>({
         cacheParams: { cacheCapacity: 10, cacheTTL: 60000 },
         readThroughFunction: async (key: string) => `value-${key}`,
-        metricsConfig: { cacheId: 'test_cache', registry },
-      });
-
-      await cache.get('key1');
-
-      const metrics = await registry.metrics();
-      expect(metrics).to.include(
-        'promise_cache_misses_total{cache_id="test_cache"} 1',
-      );
-    });
-
-    it('should handle a zero length prefix', async () => {
-      const cache = new ReadThroughPromiseCache<string, string>({
-        cacheParams: { cacheCapacity: 10, cacheTTL: 60000 },
-        readThroughFunction: async (key: string) => `value-${key}`,
-        metricsConfig: { cacheId: 'test_cache', prefix: '' },
+        metricsConfig: { prefix: '' },
       });
 
       await cache.get('key1');
 
       const metrics = await register.metrics();
-      expect(metrics).to.include(
-        'promise_cache_misses_total{cache_id="test_cache"} 1',
-      );
+      expect(metrics).to.include('promise_cache_misses_total 1');
     });
 
     it('should handle empty registry in metricsConfig', async () => {
       const cache = new ReadThroughPromiseCache<string, string>({
         cacheParams: { cacheCapacity: 10, cacheTTL: 60000 },
         readThroughFunction: async (key: string) => `value-${key}`,
-        metricsConfig: {
-          cacheId: 'test_cache',
-          prefix: 'test_rt_cache_empty_registry',
-        },
+        metricsConfig: { prefix: 'test_rt_cache_empty_registry' },
       });
 
       await cache.get('key1');
 
       const metrics = await register.metrics();
-      expect(metrics).to.include(
-        'test_rt_cache_empty_registry_misses_total{cache_id="test_cache"} 1',
-      );
+      expect(metrics).to.include('test_rt_cache_empty_registry_misses_total 1');
     });
 
     it('should provide access to metrics objects', () => {
       const cache = new ReadThroughPromiseCache<string, string>({
         cacheParams: { cacheCapacity: 10, cacheTTL: 60000 },
         readThroughFunction: async (key: string) => `value-${key}`,
-        metricsConfig: {
-          cacheId: 'test_cache',
-          registry,
-          prefix: 'test_rt_cache_metrics_obj',
-        },
+        metricsConfig: { registry, prefix: 'test_rt_cache_metrics_obj' },
       });
 
       const metrics = cache.getMetrics();
@@ -323,12 +270,10 @@ describe('Metrics functionality', () => {
 
   describe('CacheMetrics constructor', () => {
     it('should create metrics with default values', async () => {
-      const cacheMetrics = new CacheMetrics({ cacheId: 'test_cache' });
+      const cacheMetrics = new CacheMetrics({ prefix: 'test_cache' });
       cacheMetrics.recordHit();
       const metrics = await register.metrics();
-      expect(metrics).to.include(
-        'promise_cache_hits_total{cache_id="test_cache"} 1',
-      );
+      expect(metrics).to.include('test_cache_hits_total 1');
     });
   });
 });
