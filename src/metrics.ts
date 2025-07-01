@@ -20,130 +20,131 @@ import { Counter, Gauge, Registry, register } from 'prom-client';
 // Resulting metrics will be of the form:
 // <prefix ?? "promise_cache">_<metric name>{cache_id=<cacheId>, <label name 1>=<label value 1>, ..., <label name N>=<label value N>} <metric value>
 export interface CacheMetricsConfig {
-  prefix: string;
+  cacheName: string;
   registry?: Registry;
   labels?: Record<string, string>;
 }
 
+export type MetricsGroup = {
+  readCounter: Counter<string>;
+  writeCounter: Counter<string>;
+  evictionCounter: Counter<string>;
+  sizeGauge: Gauge<string>;
+};
+
+const registryToMetrics = new WeakMap<Registry, MetricsGroup>();
+
 export class CacheMetrics {
-  private readonly hitCounter: Counter<string>;
-  private readonly missCounter: Counter<string>;
-  private readonly putCounter: Counter<string>;
-  private readonly removeCounter: Counter<string>;
-  private readonly clearCounter: Counter<string>;
-  private readonly evictionCounter: Counter<string>;
-  private readonly sizeGauge: Gauge<string>;
-  private readonly prefix: string;
+  private readonly cacheName: string;
   private readonly defaultLabels: Record<string, string>;
+  private readonly registry: Registry;
 
   constructor(config: CacheMetricsConfig) {
-    const registry = config.registry || register;
-    this.prefix = config.prefix || 'promise_cache';
-    this.defaultLabels = { ...config.labels };
+    this.cacheName = config.cacheName || 'unknown_cache';
+    this.registry = config.registry || register;
 
-    this.hitCounter = createCounter({
-      name: `${this.prefix}_hits_total`,
-      help: 'Number of cache hits',
-      labels: this.defaultLabels,
-      registry,
-    });
-
-    this.missCounter = createCounter({
-      name: `${this.prefix}_misses_total`,
-      help: 'Number of cache misses',
-      labels: this.defaultLabels,
-      registry,
-    });
-
-    this.putCounter = createCounter({
-      name: `${this.prefix}_puts_total`,
-      help: 'Number of cache put operations',
-      labels: this.defaultLabels,
-      registry,
-    });
-
-    this.removeCounter = createCounter({
-      name: `${this.prefix}_removes_total`,
-      help: 'Number of cache remove operations',
-      labels: this.defaultLabels,
-      registry,
-    });
-
-    this.clearCounter = createCounter({
-      name: `${this.prefix}_clears_total`,
-      help: 'Number of cache clear operations',
-      labels: this.defaultLabels,
-      registry,
-    });
-
-    this.evictionCounter = createCounter({
-      name: `${this.prefix}_evictions_total`,
-      help: 'Number of cache evictions due to TTL or capacity',
-      labels: this.defaultLabels,
-      registry,
-    });
-
-    this.sizeGauge = createGauge({
-      name: `${this.prefix}_size`,
-      help: 'Current number of items in cache',
-      labels: this.defaultLabels,
-      registry,
-    });
+    // Lazily initialize metrics for the registry. Cache name will be a label (cache_name) on each metric.
+    this.defaultLabels = { cache_name: this.cacheName, ...config.labels };
+    if (
+      !registryToMetrics.has(this.registry) ||
+      // Handle case where registry seems to be missing expected metrics
+      !this.registry
+        .getMetricsAsArray()
+        .some((metric) => metric.name.startsWith('promise_cache_'))
+    ) {
+      registryToMetrics.set(this.registry, {
+        readCounter: createCounter({
+          name: `promise_cache_reads_total`,
+          help: 'Number of cache reads with label for result type (hit/miss)',
+          labels: {
+            ...this.defaultLabels,
+            result: 'hit', // Default to hit, will be updated later
+          },
+          registry: this.registry,
+        }),
+        writeCounter: createCounter({
+          name: `promise_cache_writes_total`,
+          help: 'Number of cache write operations with label for operation type (put/remove/clear)',
+          labels: {
+            ...this.defaultLabels,
+            op: 'put', // Default to put, will be updated later
+          },
+          registry: this.registry,
+        }),
+        evictionCounter: createCounter({
+          name: `promise_cache_evictions_total`,
+          help: 'Number of cache evictions due to TTL or capacity',
+          labels: this.defaultLabels,
+          registry: this.registry,
+        }),
+        sizeGauge: createGauge({
+          name: `promise_cache_size`,
+          help: 'Current number of items in cache',
+          labels: this.defaultLabels,
+          registry: this.registry,
+        }),
+      });
+    }
   }
 
   recordHit(): void {
-    this.hitCounter.inc(this.defaultLabels);
+    registryToMetrics.get(this.registry)?.readCounter.inc({
+      ...this.defaultLabels,
+      result: 'hit',
+    });
   }
 
   recordMiss(): void {
-    this.missCounter.inc(this.defaultLabels);
+    registryToMetrics.get(this.registry)?.readCounter.inc({
+      ...this.defaultLabels,
+      result: 'miss',
+    });
   }
 
   recordPut(): void {
-    this.putCounter.inc(this.defaultLabels);
+    registryToMetrics.get(this.registry)?.writeCounter.inc({
+      ...this.defaultLabels,
+      op: 'put',
+    });
   }
 
   recordRemove(): void {
-    this.removeCounter.inc(this.defaultLabels);
+    registryToMetrics.get(this.registry)?.writeCounter.inc({
+      ...this.defaultLabels,
+      op: 'remove',
+    });
   }
 
   recordClear(): void {
-    this.clearCounter.inc(this.defaultLabels);
+    registryToMetrics.get(this.registry)?.writeCounter.inc({
+      ...this.defaultLabels,
+      op: 'clear',
+    });
   }
 
   recordEvictions(count: number = 1): void {
-    this.evictionCounter.inc(this.defaultLabels, count);
+    registryToMetrics
+      .get(this.registry)
+      ?.evictionCounter.inc(this.defaultLabels, count);
   }
 
   updateSize(size: number): void {
-    this.sizeGauge.set(this.defaultLabels, size);
+    registryToMetrics
+      .get(this.registry)
+      ?.sizeGauge.set(this.defaultLabels, size);
   }
 
   updateSizeDeferred(getSizeCallback: () => number): void {
     // Defers the size update to the next tick to allow for any pending purges to complete
     Promise.resolve().then(() => {
-      this.sizeGauge.set(this.defaultLabels, getSizeCallback());
+      registryToMetrics
+        .get(this.registry)
+        ?.sizeGauge.set(this.defaultLabels, getSizeCallback());
     });
   }
 
-  getMetrics(): {
-    hits: Counter<string>;
-    misses: Counter<string>;
-    puts: Counter<string>;
-    removes: Counter<string>;
-    clears: Counter<string>;
-    evictions: Counter<string>;
-    size: Gauge<string>;
-  } {
-    return {
-      hits: this.hitCounter,
-      misses: this.missCounter,
-      puts: this.putCounter,
-      removes: this.removeCounter,
-      clears: this.clearCounter,
-      evictions: this.evictionCounter,
-      size: this.sizeGauge,
-    };
+  getMetrics(): MetricsGroup {
+    return registryToMetrics.get(this.registry)!;
   }
 }
 
