@@ -1,3 +1,10 @@
+# [1.2.0-alpha.6](https://github.com/ardriveapp/promise-cache/compare/v1.2.0-alpha.5...v1.2.0-alpha.6) (2025-07-01)
+
+
+### Features
+
+* **metrics:** single metric name with cache name labels PE-8242 ([a82bc6b](https://github.com/ardriveapp/promise-cache/commit/a82bc6b38f543073fdf0fdd9342ba1dfbb111d28))
+
 # [1.2.0-alpha.5](https://github.com/ardriveapp/promise-cache/compare/v1.2.0-alpha.4...v1.2.0-alpha.5) (2025-06-27)
 
 
