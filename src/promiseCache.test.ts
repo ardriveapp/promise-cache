@@ -23,7 +23,7 @@ describe('PromiseCache class', () => {
   it('constructor takes a capacity that is not exceeded by excessive puts', async () => {
     const cache = new PromiseCache<string, string>({
       cacheCapacity: 1,
-      cacheTTL: 60,
+      cacheTTLMillis: 60,
     });
     cache.put('1', Promise.resolve('one'));
     cache.put('2', Promise.resolve('two'));

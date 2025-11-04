@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { CacheParams, PromiseCache } from './promiseCache';
+import { CacheMetrics, CacheMetricsConfig } from './metrics';
 
 interface ReadThroughFunctionWithNoData<K, V> {
   (key: K): Promise<V>;
@@ -31,6 +32,7 @@ type ReadThroughFunction<K, V, D = void> = D extends void
 interface ReadThroughPromiseCacheParams<K, V, D = void> {
   cacheParams: CacheParams;
   readThroughFunction: ReadThroughFunction<K, V, D>;
+  metricsConfig?: CacheMetricsConfig;
 }
 
 export type ReadThroughPromiseCacheStatus = 'hit' | 'miss';
@@ -42,8 +44,12 @@ export class ReadThroughPromiseCache<K, V, D = void> {
   constructor({
     cacheParams,
     readThroughFunction,
+    metricsConfig,
   }: ReadThroughPromiseCacheParams<K, V, D>) {
-    this.cache = new PromiseCache(cacheParams);
+    this.cache = new PromiseCache({
+      ...cacheParams,
+      metricsConfig,
+    });
     this.readThroughFunction = readThroughFunction;
   }
 
@@ -93,5 +99,9 @@ export class ReadThroughPromiseCache<K, V, D = void> {
 
   size(): number {
     return this.cache.size();
+  }
+
+  getMetrics(): CacheMetrics | undefined {
+    return this.cache.getMetrics();
   }
 }

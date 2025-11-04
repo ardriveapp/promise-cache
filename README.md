@@ -3,7 +3,7 @@
 `@ardrive/ardrive-promise-cache` is a caching library designed to cache promises, enabling faster subsequent retrievals of data. It includes two types of caching implementations:
 
 - [PromiseCache](#promisecache) - a simple cache that stores promises in memory
-- [ReadThroughPromiseCache](#readthroughpromisecache) - a wrapper of `PromiseCache` that allows providing an async `readThroughFunction` that is called when the cache does contain the requested key
+- [ReadThroughPromiseCache](#readthroughpromisecache) - a wrapper of `PromiseCache` that allows providing an async `readThroughFunction` that is called when the cache does not contain the requested key
 
 ## Installation
 

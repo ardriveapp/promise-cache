@@ -1,6 +1,6 @@
 {
   "name": "@ardrive/ardrive-promise-cache",
-  "version": "1.4.0",
+  "version": "1.5.0-alpha.1",
   "description": "A promise cache utility.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,7 +9,10 @@
     "url": "https://github.com/ardriveapp/promise-cache"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE",
+    "package.json"
   ],
   "scripts": {
     "build": "tsc --project ./tsconfig.prod.json",
@@ -50,8 +53,8 @@
     "husky": "^8.0.3",
     "mocha": "^10.0.0",
     "nyc": "^15.1.0",
-    "prettier": "^3.0.1",
-    "semantic-release": "^21.0.7",
+    "prettier": "^3.6.1",
+    "semantic-release": "^25.0.1",
     "sinon": "^15.2.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.1.6"
@@ -60,6 +63,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@alexsasharegan/simple-cache": "^3.3.3"
+    "@alexsasharegan/simple-cache": "^3.3.3",
+    "prom-client": "^14.2.0"
   }
 }

@@ -17,3 +17,4 @@
 
 export * from './promiseCache';
 export * from './readThroughPromiseCache';
+export * from './metrics';

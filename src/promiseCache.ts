@@ -16,16 +16,43 @@
  */
 
 import { Cache, EphemeralCache } from '@alexsasharegan/simple-cache';
+import { CacheMetrics, CacheMetricsConfig } from './metrics';
 
-export interface CacheParams {
-  cacheCapacity: number;
-  cacheTTL: number;
-}
+export type CacheParams =
+  | {
+      cacheCapacity: number;
+      /** Time-to-live in milliseconds (deprecated, use cacheTTLMillis instead) */
+      cacheTTL: number;
+      cacheTTLMillis?: never;
+      metricsConfig?: CacheMetricsConfig;
+    }
+  | {
+      cacheCapacity: number;
+      cacheTTL?: never;
+      /** Time-to-live in milliseconds */
+      cacheTTLMillis: number;
+      metricsConfig?: CacheMetricsConfig;
+    };
 export class PromiseCache<K, V> {
   private readonly cache: Cache<string, Promise<V>>;
+  protected readonly metrics?: CacheMetrics;
+  protected readonly cacheCapacity: number;
 
-  constructor({ cacheCapacity, cacheTTL }: CacheParams) {
-    this.cache = EphemeralCache<string, Promise<V>>(cacheCapacity, cacheTTL);
+  constructor({
+    cacheCapacity,
+    cacheTTL,
+    cacheTTLMillis,
+    metricsConfig,
+  }: CacheParams) {
+    this.cache = EphemeralCache<string, Promise<V>>(
+      cacheCapacity,
+      cacheTTLMillis ?? cacheTTL,
+    );
+    this.cacheCapacity = cacheCapacity;
+
+    if (metricsConfig !== undefined) {
+      this.metrics = new CacheMetrics(metricsConfig);
+    }
   }
 
   cacheKeyString(key: K): string {
@@ -35,23 +62,57 @@ export class PromiseCache<K, V> {
   }
 
   put(key: K, value: Promise<V>): Promise<V> {
+    const preWriteSize = this.cache.size();
     this.cache.write(this.cacheKeyString(key), value);
+    this.metrics?.recordPut();
+    this.metrics?.updateSizeDeferred(() => {
+      const postWriteSize = this.cache.size();
+      const evictions = preWriteSize - postWriteSize + 1;
+      if (evictions > 0 && this.metrics) {
+        this.metrics.recordEvictions(evictions);
+      }
+      return postWriteSize;
+    });
     return value;
   }
 
   get(key: K): Promise<V> | undefined {
-    return this.cache.read(this.cacheKeyString(key));
+    const preReadSize = this.cache.size();
+    const result = this.cache.read(this.cacheKeyString(key));
+    if (result !== undefined) {
+      this.metrics?.recordHit();
+    } else {
+      this.metrics?.recordMiss();
+    }
+    this.metrics?.updateSizeDeferred(() => {
+      const postReadSize = this.cache.size();
+      const evictions = preReadSize - postReadSize;
+      if (evictions > 0 && this.metrics) {
+        this.metrics.recordEvictions(evictions);
+      }
+      return postReadSize;
+    });
+    return result;
   }
 
   remove(key: K): void {
     this.cache.remove(this.cacheKeyString(key));
+    this.metrics?.recordRemove();
+    // Purges are not handled during removals so no need to defer size update
+    this.metrics?.updateSize(this.cache.size());
   }
 
   clear(): void {
     this.cache.clear();
+    this.metrics?.recordClear();
+    this.metrics?.updateSize(0);
   }
 
   size(): number {
     return this.cache.size();
+  }
+
+  getMetrics(): CacheMetrics | undefined {
+    return this.metrics;
   }
 }
